@@ -9,5 +9,6 @@ namespace CarsApi.Services.Interface
     public interface IUser
     {
         User Register(User user);
+        User FindUserByNationalID(string nationalId);
     }
 }

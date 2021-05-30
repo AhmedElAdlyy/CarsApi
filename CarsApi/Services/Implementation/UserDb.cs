@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace CarsApi.Services.Implementation
 {
     public class UserDb : IUser
@@ -15,6 +16,12 @@ namespace CarsApi.Services.Implementation
         {
             _db = db;
         }
+
+        public User FindUserByNationalID(string nationalId)
+        {
+            return _db.User.FirstOrDefault(f => f.NationalId == nationalId);
+        }
+
         public User Register(User user)
         {
             User AnonUser = new User
@@ -23,7 +30,7 @@ namespace CarsApi.Services.Implementation
                 FullName = user.FullName,
                 NationalId = user.NationalId,
                 PersonalLicenceNo = user.PersonalLicenceNo,
-                Password = user.Password
+                Password = BCrypt.Net.BCrypt.HashPassword(user.Password)
             };
 
             try
