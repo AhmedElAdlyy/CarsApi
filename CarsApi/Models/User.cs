@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,26 +16,16 @@ namespace CarsApi.Models
 
         public string FullName { get; set; }
 
-
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
-
-
-        public string Password { get; set; }
-
-
-        [NotMapped]
-        [System.ComponentModel.DataAnnotations.Compare("Password")]
-        public string ConfirmPassword { get; set; }
-
-
         [StringLength(14, MinimumLength = 14)]
         public string NationalId { get; set; }
-
 
         public string PersonalLicenceNo { get; set; }
 
 
+        [ForeignKey("AspNetUser")]
+        public string AspNetUserID { get; set; }
+
+        public IdentityUser AspNetUser { get; set; }
         public virtual ICollection<UserCar> UserCars { get; set; }
         public virtual ICollection<UserPhone> UserPhones { get; set; }
     }

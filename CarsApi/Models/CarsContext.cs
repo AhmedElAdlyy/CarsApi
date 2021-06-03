@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsApi.Models
 {
-    public class CarsContext : DbContext
+    public class CarsContext : IdentityDbContext
     {
         public DbSet<Brand> Brand { get; set; }
         public DbSet<CarDetails> CarDetails { get; set; }

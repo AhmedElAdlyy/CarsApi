@@ -1,4 +1,5 @@
 ﻿using CarsApi.Models;
+using CarsApi.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,11 @@ namespace CarsApi.Services.Interface
 {
     public interface IUser
     {
-        User Register(User user);
-        User FindUserByNationalID(string nationalId);
+        Task<MessageResponseViewModel> RegisterAsync(RegisterViewModel registeration);
+        Task<MessageResponseViewModel> LoginUserAsync(LoginViewModel login);
+        Task<MessageResponseViewModel> ConfirmEmailAsync(string userId, string token);
+        Task<MessageResponseViewModel> ForgetPasswordAsync(string email);
+        Task<MessageResponseViewModel> ResetPasswordAsync(ResetPasswordViewModel reset);
+        User GetUserByAspNetUserID(string aspId);
     }
 }
