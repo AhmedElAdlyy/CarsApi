@@ -12,6 +12,9 @@ namespace CarsApi.Models
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
+        public string Nationality { get; set; }
+        public string Brief { get; set; }
+        
 
         public virtual ICollection<Model> Models { get; set; }
     }
