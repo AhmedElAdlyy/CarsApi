@@ -41,6 +41,7 @@ namespace CarsApi
                 op.UseSqlServer(Configuration.GetConnectionString("Ahmed"));
             });
             services.AddTransient<IUser, UserDb>();
+            services.AddTransient<IBrand, BrandDb>();
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
