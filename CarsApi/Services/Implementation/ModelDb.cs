@@ -10,61 +10,60 @@ using System.Threading.Tasks;
 
 namespace CarsApi.Services.Implementation
 {
-    public class BrandDb : IBrand
+    public class ModelDb : IModel
     {
         private CarsContext _db;
-        public BrandDb(CarsContext db)
+        public ModelDb(CarsContext db)
         {
             _db = db;
         }
 
-        public MessageResponseViewModel AddBrand(Brand brand)
+        public MessageResponseViewModel AddModel(Model model)
         {
             try
             {
-                _db.Brand.Add(brand);
+                _db.Add(model);
                 _db.SaveChanges();
                 return new MessageResponseViewModel
                 {
                     IsSuccess = true,
-                    Message = $"Brand {brand.Name} added successfully"
+                    Message = $"Model {model.Name} is added successfully"
                 };
             }
             catch (Exception)
             {
-
                 return new MessageResponseViewModel
                 {
                     IsSuccess = false,
-                    Message = "failed to add brand"
+                    Message = "failed to add model"
                 };
             }
         }
 
-        public MessageResponseViewModel EditBrand(int brandId, UpdateBrandViewModel newBrandData)
+        public MessageResponseViewModel EditModel(int modelId, Model newModelData)
         {
-            if (IsFilled(newBrandData))
+            if (IsFilled(newModelData))
             {
-                Brand brand = GetBrandByID(brandId);
-
-                if (brand == null)
+                var model = GetModelById(modelId);
+                if (model == null)
                     return new MessageResponseViewModel
                     {
                         IsSuccess = false,
-                        Message = "Brand Is not found"
+                        Message = "Model is not found"
                     };
 
                 try
                 {
-                    brand.Name = newBrandData.Name;
-                    brand.Nationality = newBrandData.Nationality;
-                    brand.Brief = newBrandData.Brief;
+                    model.Name = newModelData.Name;
+                    model.Year = newModelData.Year;
+                    model.BrandId = newModelData.BrandId;
+                    model.TypeId = newModelData.TypeId;
 
                     _db.SaveChanges();
                     return new MessageResponseViewModel
                     {
                         IsSuccess = true,
-                        Message = "Brand Updated Successfully"
+                        Message = "Model Updated Successfully"
                     };
                 }
                 catch (Exception)
@@ -72,7 +71,7 @@ namespace CarsApi.Services.Implementation
                     return new MessageResponseViewModel
                     {
                         IsSuccess = false,
-                        Message = "Update failed!"
+                        Message = "Failed to Update"
                     };
                 }
             }
@@ -81,27 +80,22 @@ namespace CarsApi.Services.Implementation
                 return new MessageResponseViewModel
                 {
                     IsSuccess = false,
-                    Message = "All Fields Are Empty!!"
+                    Message = "fields are empty"
                 };
             }
-
-
-
-
         }
 
-        public List<Brand> GetAllBrands()
+        public List<Model> GetAllModels()
         {
-            return _db.Brand.ToList();
+            return _db.Models.ToList();
         }
 
-        public Brand GetBrandByID(int brandID)
+        public Model GetModelById(int modelId)
         {
-            return _db.Brand.Include(i => i.Models).FirstOrDefault(f => f.Id == brandID);
-
+            return _db.Models.Include(i => i.ModelClasses).FirstOrDefault(f => f.Id == modelId);
         }
 
-        private bool IsFilled(UpdateBrandViewModel model)
+        private bool IsFilled(Model model)
         {
             PropertyInfo[] props = model.GetType().GetProperties();
 

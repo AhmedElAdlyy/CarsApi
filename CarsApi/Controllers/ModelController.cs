@@ -1,6 +1,5 @@
 ﻿using CarsApi.Models;
 using CarsApi.Services.Interface;
-using CarsApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,42 +11,43 @@ namespace CarsApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BrandController : ControllerBase
+    public class ModelController : ControllerBase
     {
-        private IBrand _db;
-        public BrandController(IBrand db)
+        private IModel _db;
+
+        public ModelController(IModel db)
         {
             _db = db;
         }
 
-
         [HttpPost("Create")]
-        public ActionResult AddBrand(Brand brand)
+        public ActionResult AddModel(Model model)
         {
             if (ModelState.IsValid)
             {
-                var result = _db.AddBrand(brand);
+                var result = _db.AddModel(model);
 
                 if (result.IsSuccess)
                     return Ok(result);
-
 
                 return BadRequest(result);
             }
-
-            return BadRequest("Check Your Data");
+            else
+            {
+                return BadRequest("Data is not correct");
+            }
         }
 
+
         [HttpPut("{id}")]
-        public ActionResult EditBrand(int id, UpdateBrandViewModel brand)
+        public ActionResult EditModel(int id, Model model)
         {
             if (ModelState.IsValid)
             {
-                var result = _db.EditBrand(id, brand);
+                var result = _db.EditModel(id, model);
 
                 if (result.IsSuccess)
                     return Ok(result);
-
 
                 return BadRequest(result);
             }
@@ -56,21 +56,21 @@ namespace CarsApi.Controllers
         }
 
         [HttpGet("All")]
-        public ActionResult ViewAllBrand()
+        public ActionResult ViewAllModels()
         {
-            var brands = _db.GetAllBrands();
-            return Ok(brands);
+            var models = _db.GetAllModels();
+            return Ok(models);
         }
 
         [HttpGet("{id}")]
-        public ActionResult ViewOneBrandDetails(int id)
+        public ActionResult ViewOneModelDetails(int id)
         {
-            var brand = _db.GetBrandByID(id);
-            if (brand == null)
+            var model = _db.GetModelById(id);
+            if (model == null)
                 return NotFound();
 
-
-            return Ok(brand);
+            return Ok(model);
         }
+
     }
 }
