@@ -45,6 +45,7 @@ namespace CarsApi
             services.AddTransient<IBrand, BrandDb>();
             services.AddTransient<IModel, ModelDb>();
             services.AddTransient<IType, TypeDb>();
+            services.AddTransient<ICarDetails, CarsDetailsDb>();
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
