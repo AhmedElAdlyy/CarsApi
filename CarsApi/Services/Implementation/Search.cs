@@ -31,7 +31,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId=M.Model.Id
                 };
                 modelPrices.Add(model_Price);
             }
@@ -53,7 +54,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
                 modelPrices.Add(model_Price);
             }
@@ -77,7 +79,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
 
                 modelPrices.Add(model_Price);
@@ -100,7 +103,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
                 modelPrices.Add(model_Price);
             }
