@@ -77,6 +77,35 @@ namespace CarsApi.Controllers
 
         }
 
+        [HttpGet("SearchByPrice")]
+        public ActionResult SearchResultPrice(int price1,int price2)
+        {
+            var Result = _db.SearchByPrice(price1,price2);
+            if (Result != null)
+            {
+                return Ok(Result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
+
+        [HttpGet("SearchByYear")]
+        public ActionResult SearchResultYear(int year)
+        {
+            var Result = _db.SearchByYear(year);
+            if (Result != null)
+            {
+                return Ok(Result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+
+        }
     }
 }
 
