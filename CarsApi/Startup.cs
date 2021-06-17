@@ -45,6 +45,7 @@ namespace CarsApi
             services.AddTransient<IBrand, BrandDb>();
             services.AddTransient<IModel, ModelDb>();
             services.AddTransient<IType, TypeDb>();
+            services.AddTransient<IHome, HomeDb>();
             services.AddTransient<ICarDetails, CarsDetailsDb>();
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
