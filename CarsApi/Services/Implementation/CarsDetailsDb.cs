@@ -26,6 +26,7 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.ModelClass)
                 .Include(i => i.ModelClass.Model)
                 .Include(i => i.ModelClass.Model.Brand)
+                .Include(i=>i.ModelClass.Model.Type)
                 .FirstOrDefault(f => f.Id == carDetailsId);
 
 
@@ -47,8 +48,11 @@ namespace CarsApi.Services.Implementation
             {
                 IsSuccess = true,
 
+                Price = details.Price,
                 CarName = details.ModelClass.Model.Brand.Name + " " + details.ModelClass.Model.Name + " " + details.ModelClass.Model.Year,
                 ClassName = details.ModelClass.ClassName,
+                CarType = details.ModelClass.Model.Type.Name,
+
                 LuggageBoxCapacity = dimensions.LuggageBoxCapacity,
                 Clearance = dimensions.Clearance,
                 Width = dimensions.Width,

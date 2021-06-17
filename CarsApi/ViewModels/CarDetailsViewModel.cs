@@ -7,10 +7,11 @@ namespace CarsApi.ViewModels
 {
     public class CarDetailsViewModel
     {
-
         public bool? IsSuccess { get; set; }
         public string CarName { get; set; }
         public string ClassName { get; set; }
+        public decimal? Price { get; set; }
+        public string CarType { get; set; }
 
         //dimensions
         public double? LuggageBoxCapacity { get; set; }
