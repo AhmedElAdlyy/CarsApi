@@ -31,7 +31,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId=M.Model.Id
                 };
                 modelPrices.Add(model_Price);
             }
@@ -53,7 +54,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
                 modelPrices.Add(model_Price);
             }
@@ -77,7 +79,8 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
 
                 modelPrices.Add(model_Price);
@@ -100,8 +103,57 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
-                    modelclassId = M.ModelClass.Id
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
                 };
+                modelPrices.Add(model_Price);
+            }
+            return modelPrices;
+        }
+
+        public List<SearchViewModel> SearchByPrice(int price1, int price2)
+        {
+            List<SearchViewModel> modelPrices = new List<SearchViewModel>();
+            var cardetails = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
+                .Include(a => a.ModelClass.Model.Type)
+               .Where(a => a.Price>=price1 && a.Price<=price2 && a.ModelClass.ClassId == 1)
+               .Select(x => new { x.ModelClass.Model, x.Price, x.CarPhotos, x.ModelClass.Model.Brand, x.ModelClass }).ToList();
+            foreach (var M in cardetails)
+            {
+                SearchViewModel model_Price = new SearchViewModel
+                {
+                    Model = M.Model.Name,
+                    price = (decimal)M.Price,
+                    Brand = M.Brand.Name,
+                    Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
+                };
+
+                modelPrices.Add(model_Price);
+            }
+            return modelPrices;
+        }
+
+        public List<SearchViewModel> SearchByYear(int year)
+        {
+            List<SearchViewModel> modelPrices = new List<SearchViewModel>();
+            var cardetails = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
+                .Include(a => a.ModelClass.Model.Type)
+               .Where(a => a.ModelClass.Model.Year ==year && a.ModelClass.ClassId == 1)
+               .Select(x => new { x.ModelClass.Model, x.Price, x.CarPhotos, x.ModelClass.Model.Brand, x.ModelClass }).ToList();
+            foreach (var M in cardetails)
+            {
+                SearchViewModel model_Price = new SearchViewModel
+                {
+                    Model = M.Model.Name,
+                    price = (decimal)M.Price,
+                    Brand = M.Brand.Name,
+                    Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.Model.Id
+                };
+
                 modelPrices.Add(model_Price);
             }
             return modelPrices;

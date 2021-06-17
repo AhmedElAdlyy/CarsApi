@@ -12,5 +12,6 @@ namespace CarsApi.ViewModels
         public string Model { get; set; }
         public string Img { get; set; }
         public int modelclassId { get; set; }
+        public int modelId { get; set; }
     }
 }
