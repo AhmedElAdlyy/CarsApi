@@ -40,9 +40,9 @@ namespace CarsApi.Services.Implementation
                     {
                         CarDetailsID = car.Id,
                         CarType = car.ModelClass.Model.Type.Name,
-                        Cylinders = car.Performances.ToList()[0].Cylinders,
-                        Fuel = car.Performances.ToList()[0].FuelType,
-                        ImageName = car.CarPhotos.ToList()[0].PhotoName,
+                        Cylinders = car.Performances.Select(s=>s.Cylinders).FirstOrDefault(),
+                        Fuel = car.Performances.Select(s=>s.FuelType).FirstOrDefault(),
+                        ImageName = car.CarPhotos.Select(s=>s.PhotoName).FirstOrDefault(),
                         Price = car.Price,
                         Year = car.ModelClass.Model.Year,
                         CarName = car.ModelClass.Model.Brand.Name + " " + car.ModelClass.Model.Name,

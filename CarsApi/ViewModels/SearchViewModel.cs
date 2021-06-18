@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace CarsApi.ViewModels
 {
+
+    public class SearchOutputViewModel
+    {
+        public bool IsSuccess { get; set; }
+        public List<SearchViewModel> SearchResults = new List<SearchViewModel>();
+    }
+
     public class SearchViewModel
     {
         public decimal price { get; set; }

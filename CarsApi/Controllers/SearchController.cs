@@ -1,4 +1,5 @@
 ﻿using CarsApi.Services.Interface;
+using CarsApi.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -104,7 +105,16 @@ namespace CarsApi.Controllers
             {
                 return BadRequest();
             }
+        }
 
+        [HttpGet("General")]
+        public ActionResult GeneralSearchResult([FromQuery]SearchFormViewModel model)
+        {
+            var result = _db.SearchByAll(model);
+            if (result.IsSuccess)
+                return Ok(result.SearchResults);
+
+            return BadRequest();
         }
     }
 }

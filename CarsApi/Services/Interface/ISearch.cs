@@ -14,5 +14,6 @@ namespace CarsApi.Services.Interface
         List<SearchViewModel> SearchByBody(int Body);
         List<SearchViewModel> SearchByPrice(int price1,int price2);
         List<SearchViewModel> SearchByYear(int year);
+        SearchOutputViewModel SearchByAll(SearchFormViewModel searchForm);
     }
 }

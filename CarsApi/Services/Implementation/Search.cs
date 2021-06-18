@@ -158,6 +158,43 @@ namespace CarsApi.Services.Implementation
             }
             return modelPrices;
         }
+
+        public SearchOutputViewModel SearchByAll(SearchFormViewModel searchForm)
+        {
+            SearchOutputViewModel Output = new SearchOutputViewModel();
+
+            var set = _db.CarDetails
+                .Include(i => i.ModelClass.Model.Brand)
+                .Include(i => i.ModelClass.Model)
+                .Include(i => i.CarPhotos)
+                .Include(i => i.ModelClass)
+                .Where(w => w.ModelClass.Model.Year == searchForm.Year && w.Price >= searchForm.MinPrice && w.Price < searchForm.MaxPrice && w.ModelClass.Model.Id == searchForm.ModelId)
+                .ToList();
+
+            if (set == null)
+                return new SearchOutputViewModel
+                {
+                    IsSuccess = false
+                };
+
+            foreach (var result in set)
+            {
+                SearchViewModel model = new SearchViewModel
+                {
+                    Brand = result.ModelClass.Model.Brand.Name,
+                    Model = result.ModelClass.Model.Name,
+                    price = result.Price.Value,
+                    modelclassId = result.ModelClass.Id,
+                    modelId = result.ModelClass.Model.Id,
+                    Img = result.CarPhotos.Select(a => a.PhotoName).FirstOrDefault()
+                };
+                Output.SearchResults.Add(model);
+            }
+            Output.IsSuccess = true;
+
+            return Output;
+
+        }
     }
 
 }
