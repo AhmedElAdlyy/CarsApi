@@ -29,8 +29,8 @@ namespace CarsApi.Services.Implementation
             .Include(i => i.Performances)
             .Include(i => i.ModelClass.Model.Type)
             .Include(i => i.ModelClass.Model)
-            .Include(i=>i.ModelClass)
-            .Include(i=>i.ModelClass.Model.Brand)
+            .Include(i => i.ModelClass)
+            .Include(i => i.ModelClass.Model.Brand)
             .Include(i => i.CarPhotos)
             .Where(w => Ids.Contains(w.Id)).ToList();
 
@@ -45,9 +45,9 @@ namespace CarsApi.Services.Implementation
                         ImageName = car.CarPhotos.ToList()[0].PhotoName,
                         Price = car.Price,
                         Year = car.ModelClass.Model.Year,
-                        CarName = car.ModelClass.Model.Brand.Name+" "+car.ModelClass.Model.Name,
+                        CarName = car.ModelClass.Model.Brand.Name + " " + car.ModelClass.Model.Name,
                         ClassName = car.ModelClass.ClassName,
-                        TransmissionType = car.ModelClass.ClassName.Contains("A/T")?"Automatic" : "Manual"
+                        TransmissionType = car.ModelClass.ClassName.Contains("A/T") ? "Automatic" : "Manual"
                     };
                     CarsList.homeCars.Add(CarModel);
                 }
@@ -70,17 +70,29 @@ namespace CarsApi.Services.Implementation
         private List<int> GenerateIds()
         {
             List<int> Ids = new List<int>();
+            List<int> BrandIds = new List<int>();
             Random rnd = new Random();
             int id;
+            int modelId;
             for (int i = 0; i < 9; i++)
             {
                 do
                 {
                     id = rnd.Next(176, 266);
-                } while (Ids.Contains(id) || (id == 187 || id == 233 || id == 232 || id == 186 || id == 187 || id == 188));
+                    modelId = GetCarBrandId(id).Value;
+                } while (Ids.Contains(id) || BrandIds.Contains(modelId) || (id == 187 || id == 233 || id == 232 || id == 186 || id == 187 || id == 188));
                 Ids.Add(id);
+                BrandIds.Add(modelId);
             }
             return Ids;
+        }
+
+        private int? GetCarBrandId(int carDetailsId)
+        {
+            var model = _db.CarDetails
+                .Include(i => i.ModelClass.Model.Brand)
+                .FirstOrDefault(f => f.Id == carDetailsId);
+            return model.ModelClass.Model.Brand.Id;
         }
     }
 }
