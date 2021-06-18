@@ -29,6 +29,8 @@ namespace CarsApi.Services.Implementation
             .Include(i => i.Performances)
             .Include(i => i.ModelClass.Model.Type)
             .Include(i => i.ModelClass.Model)
+            .Include(i=>i.ModelClass)
+            .Include(i=>i.ModelClass.Model.Brand)
             .Include(i => i.CarPhotos)
             .Where(w => Ids.Contains(w.Id)).ToList();
 
@@ -42,7 +44,10 @@ namespace CarsApi.Services.Implementation
                         Fuel = car.Performances.ToList()[0].FuelType,
                         ImageName = car.CarPhotos.ToList()[0].PhotoName,
                         Price = car.Price,
-                        Year = car.ModelClass.Model.Year
+                        Year = car.ModelClass.Model.Year,
+                        CarName = car.ModelClass.Model.Brand.Name+" "+car.ModelClass.Model.Name,
+                        ClassName = car.ModelClass.ClassName,
+                        TransmissionType = car.ModelClass.ClassName.Contains("A/T")?"Automatic" : "Manual"
                     };
                     CarsList.homeCars.Add(CarModel);
                 }

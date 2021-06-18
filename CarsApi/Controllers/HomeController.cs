@@ -25,7 +25,7 @@ namespace CarsApi.Controllers
             var result = _db.GetCarsDate();
 
             if (result.IsSuccess)
-                return Ok(result);
+                return Ok(result.homeCars);
 
             return BadRequest(result);
 

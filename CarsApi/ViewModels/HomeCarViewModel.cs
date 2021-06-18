@@ -17,6 +17,9 @@ namespace CarsApi.ViewModels
     {
         public int CarDetailsID { get; set; }
         public int? Fuel { get; set; }
+        public string TransmissionType { get; set; }
+        public string CarName { get; set; }
+        public string ClassName { get; set; }
         public string CarType { get; set; }
         public int? Cylinders { get; set; }
         public decimal? Price { get; set; }
