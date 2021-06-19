@@ -111,9 +111,5 @@ namespace CarsApi.ViewModels
         public bool? ActiveParkAssist { get; set; }
         public bool? ElectricHandbrake { get; set; }
         public bool? CruiseControl { get; set; }
-
-        //photos
-
-        public List<string> PhotosNames = new List<string>();
     }
 }

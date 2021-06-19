@@ -51,7 +51,6 @@ namespace CarsApi.Services.Implementation
         public CarDetailsViewModel ViewCarDetails(int carDetailsId)
         {
             var details = _db.CarDetails
-                .Include(i => i.CarPhotos)
                 .Include(i => i.ModelClass)
                 .Include(i => i.ModelClass.Model)
                 .Include(i => i.ModelClass.Model.Brand)
@@ -165,11 +164,6 @@ namespace CarsApi.Services.Implementation
                 ElectricHandbrake = safety.ElectricHandbrake,
                 CruiseControl = safety.CruiseControl
             };
-
-            foreach (var photo in details.CarPhotos)
-            {
-                model.PhotosNames.Add(photo.PhotoName);
-            }
 
             return model;
         }
