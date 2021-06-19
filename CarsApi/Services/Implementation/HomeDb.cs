@@ -80,7 +80,7 @@ namespace CarsApi.Services.Implementation
                 {
                     id = rnd.Next(176, 266);
                     modelId = GetCarBrandId(id).Value;
-                } while (Ids.Contains(id) || BrandIds.Contains(modelId) || (id == 187 || id == 233 || id == 232 || id == 186 || id == 187 || id == 188));
+                } while (Ids.Contains(id) || BrandIds.Contains(modelId) || (id == 187 || id == 233 || id == 232 || id == 186 || id == 188));
                 Ids.Add(id);
                 BrandIds.Add(modelId);
             }

@@ -29,5 +29,18 @@ namespace CarsApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("photos/{carDetailsId}")]
+        public ActionResult GetCarImages(int carDetailsId)
+        {
+            var result = _db.GetImages(carDetailsId);
+
+            if (!result.IsSuccess)
+                return BadRequest();
+
+            return Ok(result.Images);
+        }
+
+
     }
 }

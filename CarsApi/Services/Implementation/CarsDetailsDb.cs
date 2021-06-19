@@ -18,6 +18,35 @@ namespace CarsApi.Services.Implementation
             _db = db;
         }
 
+        public ImagesViewModel GetImages(int carDetailsId)
+        {
+            ImagesViewModel images = new ImagesViewModel();
+
+            var photos = _db.CarPhoto
+                .Include(i => i.CarDetails.ModelClass.Model.Brand)
+                .Include(i => i.CarDetails.ModelClass.Model)
+                .Where(w => w.CarDetailsId == carDetailsId).ToList();
+
+            if (photos == null)
+                return new ImagesViewModel
+                {
+                    IsSuccess = false
+                };
+
+            foreach (var photo in photos)
+            {
+                CarPhotosViewModel img = new CarPhotosViewModel
+                {
+                    PreviewImageSrc = photo.PhotoName,
+                    ThumbnailImageSrc = photo.PhotoName,
+                    Alt = photo.CarDetails.ModelClass.Model.Brand.Name + " " + photo.CarDetails.ModelClass.Model.Name
+                };
+
+                images.Images.Add(img);
+            }
+            images.IsSuccess = true;
+            return images;
+        }
 
         public CarDetailsViewModel ViewCarDetails(int carDetailsId)
         {
@@ -26,7 +55,7 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.ModelClass)
                 .Include(i => i.ModelClass.Model)
                 .Include(i => i.ModelClass.Model.Brand)
-                .Include(i=>i.ModelClass.Model.Type)
+                .Include(i => i.ModelClass.Model.Type)
                 .FirstOrDefault(f => f.Id == carDetailsId);
 
 
@@ -44,7 +73,7 @@ namespace CarsApi.Services.Implementation
                     IsSuccess = false
                 };
 
-            CarDetailsViewModel model =  new CarDetailsViewModel
+            CarDetailsViewModel model = new CarDetailsViewModel
             {
                 IsSuccess = true,
 

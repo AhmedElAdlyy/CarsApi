@@ -9,5 +9,6 @@ namespace CarsApi.Services.Interface
     public interface ICarDetails
     {
         CarDetailsViewModel ViewCarDetails(int carDetailsId);
+        ImagesViewModel GetImages(int carDetailsId);
     }
 }
