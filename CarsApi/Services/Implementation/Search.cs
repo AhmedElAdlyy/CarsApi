@@ -47,7 +47,7 @@ namespace CarsApi.Services.Implementation
         {
             List<SearchViewModel> modelPrices = new List<SearchViewModel>();
             List<CarDetails> Cars = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
-                .Include(a => a.ModelClass.Model.Type).Include(a=>a.ModelClass.Model.Brand)
+                .Include(a => a.ModelClass.Model.Type).Include(a=>a.ModelClass.Model.Brand).Include(a => a.ModelClass.Class)
                 .ToList();
 
             if (minprice != 0)
@@ -71,6 +71,7 @@ namespace CarsApi.Services.Implementation
                     price = (decimal)M.Price,
                     Brand = M.ModelClass.Model.Brand.Name,
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    ClassName=M.ModelClass.ClassName,
                     modelclassId = M.ModelClass.Id,
                     modelId = M.ModelClass.Model.Id
                 };
