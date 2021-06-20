@@ -82,6 +82,27 @@ namespace CarsApi.Services.Implementation
             
         }
 
+        public List<SearchViewModel> SearchViewModel(int Brand)
+        {
+            List<SearchViewModel> modelPrices = new List<SearchViewModel>();
+            var cardetails = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
+                .Where(a => a.ModelClass.Model.Brand.Id == Brand && a.ModelClass.ClassId == 1)
+                .Select(x => new { x.ModelClass.Model, x.Price, x.CarPhotos, x.ModelClass.Model.Brand, x.ModelClass }).ToList();
+            foreach (var M in cardetails)
+            {
+                SearchViewModel model_Price = new SearchViewModel
+                {
+                    Model = M.Model.Name,
+                    price = (decimal)M.Price,
+                    Brand = M.Brand.Name,
+                    Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    modelclassId = M.ModelClass.Id,
+                    modelId=M.ModelClass.Model.Id
+                };
+                modelPrices.Add(model_Price);
+            }
+            return modelPrices;
+        }
 
     }
 }
