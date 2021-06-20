@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CarsApi.Services.Interface
 {
-    public interface ISearch
+    public interface IRent
     {
-        List<SearchViewModel> GetAll(decimal minprice, decimal maxprice, int brand, int model, int body, int year);
+       CarDetailsViewModel EditRentDetails(int UserId);
     }
 }
