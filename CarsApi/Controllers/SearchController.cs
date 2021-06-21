@@ -33,7 +33,6 @@ namespace CarsApi.Controllers
         }
 
         [HttpGet("SearchByAll")]
-        //[Route("SearchByAll/{minprice}/{maxprice}/{brand}/{model}/{body}/{year}")]
         public ActionResult SearchResult(decimal minprice,decimal maxprice, int brand, int model, int body, int year)
         {
             var Result = _db.GetAll(minprice, maxprice,  brand,  model,  body,  year);
