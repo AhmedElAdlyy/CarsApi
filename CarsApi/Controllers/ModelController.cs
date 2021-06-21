@@ -72,10 +72,10 @@ namespace CarsApi.Controllers
             return Ok(model);
         }
 
-        [HttpGet("GetInBrand/{id}")]
-        public ActionResult GetModelsOfBrand(int id)
+        [HttpGet("GetInBrand")]
+        public ActionResult GetModelsOfBrand([FromQuery]int id, string year)
         {
-            var models = _db.GetAllModelsInOneBrand(id);
+            var models = _db.GetAllModelsInOneBrand(id, year);
             if (models.Count == 0)
                 return NotFound();
 
