@@ -13,5 +13,6 @@ namespace CarsApi.Services.Interface
         MessageResponseViewModel EditModel(int modelId, Model newModelData);
         List<Model> GetAllModels();
         MessageResponseViewModel AddModel(Model model);
+        List<Model> GetAllModelsInOneBrand(int brandId);
     }
 }

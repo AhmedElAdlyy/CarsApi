@@ -90,6 +90,11 @@ namespace CarsApi.Services.Implementation
             return _db.Models.ToList();
         }
 
+        public List<Model> GetAllModelsInOneBrand(int brandId)
+        {
+            return _db.Models.Where(w => w.Brand.Id == brandId).ToList();
+        }
+
         public Model GetModelById(int modelId)
         {
             return _db.Models.Include(i => i.ModelClasses).FirstOrDefault(f => f.Id == modelId);
