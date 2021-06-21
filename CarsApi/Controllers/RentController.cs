@@ -30,6 +30,20 @@ namespace CarsApi.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPut("SaveRent")]
+        public ActionResult SaveRentResult([FromBody]CarDetailsViewModel model,[FromQuery] int cardetailsid)
+        {
+            var Result = _db.SaveRentDetails(model, cardetailsid);
+            if (Result != null)
+            {
+                return Ok(Result);
+            }
+            else
+            {
+                return BadRequest();
+            }
 
         }
     }

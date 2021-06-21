@@ -15,105 +15,251 @@ namespace CarsApi.Services.Implementation
 
         public Rent (CarsContext db)
         {
-            _db = db; 
+            _db = db;
         }
         public CarDetailsViewModel EditRentDetails(int UserId)
         {
-            CarDetailsViewModel  RentInfo = new CarDetailsViewModel ();
-            var RentDetails = _db.CarDetails.Include(x => x.UserCars).Include(x => x.Interiors).Include(x => x.Exteriors)
-                .Include(x => x.Dimensions).Include(x => x.Safeties).Include(x => x.Performances).Include(x => x.Multimedia)
-                .Where(x => x.Id == UserId)
-                .Select(x => new { x.Interiors, x.Exteriors, x.Multimedia, x.Safeties, x.Performances, x.Dimensions });
-            foreach (var Rent in RentDetails)
-            {
-                CarDetailsViewModel RentModel = new CarDetailsViewModel
+            var newdetails = _db.CarDetails.Find(UserId);
+            var details = _db.CarDetails
+                .Include(i => i.ModelClass)
+                .Include(i => i.ModelClass.Model)
+                .Include(i => i.ModelClass.Model.Brand)
+                .Include(i => i.ModelClass.Model.Type)
+                .FirstOrDefault(f => f.IsFromSystem == true && f.ModelClassId==newdetails.ModelClassId);
+
+            var dimensions = _db.Dimension.FirstOrDefault(f => f.CarDetailsId == details.Id);
+            var exterior = _db.Exterior.FirstOrDefault(f => f.CarDetailsId == details.Id);
+            var interior = _db.Interior.FirstOrDefault(f => f.CarDetailsId == details.Id);
+            var safety = _db.Safety.FirstOrDefault(f => f.CarDetailsId == details.Id);
+            var multimedia = _db.Multimedia.FirstOrDefault(f => f.CarDetailsId == details.Id);
+            var performance = _db.Performance.FirstOrDefault(f => f.CarDetailsId == details.Id);
+
+            if (details == null)
+                return new CarDetailsViewModel
                 {
-                    LuggageBoxCapacity = Rent.Dimensions.FirstOrDefault().LuggageBoxCapacity,
-                    Clearance = Rent.Dimensions.FirstOrDefault().Clearance,
-                    Width = Rent.Dimensions.FirstOrDefault().Width,
-                    Height = Rent.Dimensions.FirstOrDefault().Height,
-                    Wheelbase = Rent.Dimensions.FirstOrDefault().Wheelbase,
-                    Length = Rent.Dimensions.FirstOrDefault().Length,
-                    TrimSize = Rent.Exteriors.FirstOrDefault().TrimSize,
-                    RainSensor = Rent.Exteriors.FirstOrDefault().RainSensor,
-                    AutoFoldingMirror = Rent.Exteriors.FirstOrDefault().AutoFoldingMirror,
-                    PanoramaRoof = Rent.Exteriors.FirstOrDefault().PanoramaRoof,
-                    LedDaytimeRunningLamps = Rent.Exteriors.FirstOrDefault().LedDaytimeRunningLamps,
-                    Headlamps = Rent.Exteriors.FirstOrDefault().Headlamps,
-                    FogLambs = Rent.Exteriors.FirstOrDefault().FogLambs,
-                    AutoLighting = Rent.Exteriors.FirstOrDefault().AutoLighting,
-                    RearLambs = Rent.Exteriors.FirstOrDefault().RearLambs,
-                    SunRoof = Rent.Exteriors.FirstOrDefault().SunRoof,
-                    WheelsWithTireSize = Rent.Exteriors.FirstOrDefault().WheelsWithTireSize,
-                    LightSensors = Rent.Exteriors.FirstOrDefault().LightSensors,
-                    PowerMirrors = Rent.Exteriors.FirstOrDefault().PowerMirrors,
-                    PrivacyGlass = Rent.Exteriors.FirstOrDefault().PrivacyGlass,
-                    CenterLock = Rent.Interiors.FirstOrDefault().CenterLock,
-                    RearParkingSensors = Rent.Interiors.FirstOrDefault().RearParkingSensors,
-                    AmbientLighting = Rent.Interiors.FirstOrDefault().AmbientLighting,
-                    ElectronicWindow = Rent.Interiors.FirstOrDefault().ElectronicWindow,
-                    DriveModeSelect = Rent.Interiors.FirstOrDefault().DriveModeSelect,
-                    LeatherTransmission = Rent.Interiors.FirstOrDefault().LeatherTransmission,
-                    VariableHeatedDriverPassengerSeat = Rent.Interiors.FirstOrDefault().VariableHeatedDriverPassengerSeat,
-                    MovableSteeringWheel = Rent.Interiors.FirstOrDefault().MovableSteeringWheel,
-                    RearViewCamera = Rent.Interiors.FirstOrDefault().RearViewCamera,
-                    KeylessStartStop = Rent.Interiors.FirstOrDefault().KeylessStartStop,
-                    BackHolder = Rent.Interiors.FirstOrDefault().BackHolder,
-                    AutoDimmingMirror = Rent.Interiors.FirstOrDefault().AutoDimmingMirror,
-                    AutoFoldingBackSeats = Rent.Interiors.FirstOrDefault().AutoFoldingBackSeats,
-                    Ac = Rent.Interiors.FirstOrDefault().Ac,
-                    Dashboard = Rent.Interiors.FirstOrDefault().Dashboard,
-                    FrontCamera = Rent.Interiors.FirstOrDefault().FrontCamera,
-                    PassengerSeat = Rent.Interiors.FirstOrDefault().PassengerSeat,
-                    LeatherSteeringWheel = Rent.Interiors.FirstOrDefault().LeatherSteeringWheel,
-                    PaddleShifters = Rent.Interiors.FirstOrDefault().PaddleShifters,
-                    NumberOfSeats = Rent.Interiors.FirstOrDefault().NumberOfSeats,
-                    PowerTailgate = Rent.Interiors.FirstOrDefault().PowerTailgate,
-                    AcBackSeats = Rent.Interiors.FirstOrDefault().AcBackSeats,
-                    DriverSeat = Rent.Interiors.FirstOrDefault().DriverSeat,
-                    FrontParkingSensors = Rent.Interiors.FirstOrDefault().FrontParkingSensors,
-                    KeylessEntry = Rent.Interiors.FirstOrDefault().KeylessEntry,
-                    LeatherSeats = Rent.Interiors.FirstOrDefault().LeatherSeats,
-                    MultiFunction = Rent.Interiors.FirstOrDefault().MultiFunction,
-                    WirlessCharger = Rent.Multimedia.FirstOrDefault().WirlessCharger,
-                    Bluetooth = Rent.Multimedia.FirstOrDefault().Bluetooth,
-                    SmartphoneLinkSystem = Rent.Multimedia.FirstOrDefault().SmartphoneLinkSystem,
-                    Touchscreen = Rent.Multimedia.FirstOrDefault().Touchscreen,
-                    Usb = Rent.Multimedia.FirstOrDefault().Usb,
-                    MultifunctionSteeringWheel = Rent.Multimedia.FirstOrDefault().MultifunctionSteeringWheel,
-                    CdPlayer = Rent.Multimedia.FirstOrDefault().CdPlayer,
-                    Speakers = Rent.Multimedia.FirstOrDefault().Speakers,
-                    NavigationSystem = Rent.Multimedia.FirstOrDefault().NavigationSystem,
-                    Aux = Rent.Multimedia.FirstOrDefault().Aux,
-                    HeadUpDisplay = Rent.Multimedia.FirstOrDefault().HeadUpDisplay,
-                    Cylinders = Rent.Performances.FirstOrDefault().Cylinders,
-                    FuelTankCapacity = Rent.Performances.FirstOrDefault().FuelTankCapacity,
-                    FuelType = Rent.Performances.FirstOrDefault().FuelType,
-                    MaxToruqe = Rent.Performances.FirstOrDefault().MaxToruqe,
-                    FuelConsumption = Rent.Performances.FirstOrDefault().FuelConsumption,
-                    GearShifts = Rent.Performances.FirstOrDefault().GearShifts,
-                    Acceleration = Rent.Performances.FirstOrDefault().Acceleration,
-                    MaxPower = Rent.Performances.FirstOrDefault().MaxPower,
-                    MaxSpeed = Rent.Performances.FirstOrDefault().MaxSpeed,
-                    TractionControl = Rent.Safeties.FirstOrDefault().TractionControl,
-                    ElectroncStabilityControl = Rent.Safeties.FirstOrDefault().ElectroncStabilityControl,
-                    AntiLockBrakingSystem = Rent.Safeties.FirstOrDefault().AntiLockBrakingSystem,
-                    TirePressureMonitoring = Rent.Safeties.FirstOrDefault().TirePressureMonitoring,
-                    SpeedLimiter = Rent.Safeties.FirstOrDefault().SpeedLimiter,
-                    AutoStartStopFunctions = Rent.Safeties.FirstOrDefault().AutoStartStopFunctions,
-                    PowerAssistedSteering = Rent.Safeties.FirstOrDefault().PowerAssistedSteering,
-                    Immobilizer = Rent.Safeties.FirstOrDefault().Immobilizer,
-                    ElectronicBrakeForceDistribution = Rent.Safeties.FirstOrDefault().ElectronicBrakeForceDistribution,
-                    ChildSeats = Rent.Safeties.FirstOrDefault().ChildSeats,
-                    HillAssist = Rent.Safeties.FirstOrDefault().HillAssist,
-                    Airbags = Rent.Safeties.FirstOrDefault().Airbags,
-                    ActiveParkAssist = Rent.Safeties.FirstOrDefault().ActiveParkAssist,
-                    ElectricHandbrake = Rent.Safeties.FirstOrDefault().ElectricHandbrake,
-                    CruiseControl = Rent.Safeties.FirstOrDefault().CruiseControl
+                    IsSuccess = false
+                };
+
+            CarDetailsViewModel model = new CarDetailsViewModel
+            {
+                IsSuccess = true,
+                Price = details.Price,
+                CarName = details.ModelClass.Model.Brand.Name + " " + details.ModelClass.Model.Name + " " + details.ModelClass.Model.Year,
+                ClassName = details.ModelClass.ClassName,
+                CarType = details.ModelClass.Model.Type.Name,
+                LuggageBoxCapacity = dimensions.LuggageBoxCapacity,
+                Clearance = dimensions.Clearance,
+                Width = dimensions.Width,
+                Height = dimensions.Height,
+                Wheelbase = dimensions.Wheelbase,
+                Length = dimensions.Length,
+                TrimSize = exterior.TrimSize,
+                RainSensor = exterior.RainSensor,
+                AutoFoldingMirror = exterior.AutoFoldingMirror,
+                PanoramaRoof = exterior.PanoramaRoof,
+                LedDaytimeRunningLamps = exterior.LedDaytimeRunningLamps,
+                Headlamps = exterior.Headlamps,
+                FogLambs = exterior.FogLambs,
+                AutoLighting = exterior.AutoLighting,
+                RearLambs = exterior.RearLambs,
+                SunRoof = exterior.SunRoof,
+                WheelsWithTireSize = exterior.WheelsWithTireSize,
+                LightSensors = exterior.LightSensors,
+                PowerMirrors = exterior.PowerMirrors,
+                PrivacyGlass = exterior.PrivacyGlass,
+                CenterLock = interior.CenterLock,
+                RearParkingSensors = interior.RearParkingSensors,
+                AmbientLighting = interior.AmbientLighting,
+                ElectronicWindow = interior.ElectronicWindow,
+                DriveModeSelect = interior.DriveModeSelect,
+                LeatherTransmission = interior.LeatherTransmission,
+                VariableHeatedDriverPassengerSeat = interior.VariableHeatedDriverPassengerSeat,
+                MovableSteeringWheel = interior.MovableSteeringWheel,
+                RearViewCamera = interior.RearViewCamera,
+                KeylessStartStop = interior.KeylessStartStop,
+                BackHolder = interior.BackHolder,
+                AutoDimmingMirror = interior.AutoDimmingMirror,
+                AutoFoldingBackSeats = interior.AutoFoldingBackSeats,
+                Ac = interior.Ac,
+                Dashboard = interior.Dashboard,
+                FrontCamera = interior.FrontCamera,
+                PassengerSeat = interior.PassengerSeat,
+                LeatherSteeringWheel = interior.LeatherSteeringWheel,
+                PaddleShifters = interior.PaddleShifters,
+                NumberOfSeats = interior.NumberOfSeats,
+                PowerTailgate = interior.PowerTailgate,
+                AcBackSeats = interior.AcBackSeats,
+                DriverSeat = interior.DriverSeat,
+                FrontParkingSensors = interior.FrontParkingSensors,
+                KeylessEntry = interior.KeylessEntry,
+                LeatherSeats = interior.LeatherSeats,
+                MultiFunction = interior.MultiFunction,
+                WirlessCharger = multimedia.WirlessCharger,
+                Bluetooth = multimedia.Bluetooth,
+                SmartphoneLinkSystem = multimedia.SmartphoneLinkSystem,
+                Touchscreen = multimedia.Touchscreen,
+                Usb = multimedia.Usb,
+                MultifunctionSteeringWheel = multimedia.MultifunctionSteeringWheel,
+                CdPlayer = multimedia.CdPlayer,
+                Speakers = multimedia.Speakers,
+                NavigationSystem = multimedia.NavigationSystem,
+                Aux = multimedia.Aux,
+                HeadUpDisplay = multimedia.HeadUpDisplay,
+                Cylinders = performance.Cylinders,
+                FuelTankCapacity = performance.FuelTankCapacity,
+                FuelType = performance.FuelType,
+                MaxToruqe = performance.MaxToruqe,
+                FuelConsumption = performance.FuelConsumption,
+                GearShifts = performance.GearShifts,
+                Acceleration = performance.Acceleration,
+                MaxPower = performance.MaxPower,
+                MaxSpeed = performance.MaxSpeed,
+                TractionControl = safety.TractionControl,
+                ElectroncStabilityControl = safety.ElectroncStabilityControl,
+                AntiLockBrakingSystem = safety.AntiLockBrakingSystem,
+                TirePressureMonitoring = safety.TirePressureMonitoring,
+                SpeedLimiter = safety.SpeedLimiter,
+                AutoStartStopFunctions = safety.AutoStartStopFunctions,
+                PowerAssistedSteering = safety.PowerAssistedSteering,
+                Immobilizer = safety.Immobilizer,
+                ElectronicBrakeForceDistribution = safety.ElectronicBrakeForceDistribution,
+                ChildSeats = safety.ChildSeats,
+                HillAssist = safety.HillAssist,
+                Airbags = safety.Airbags,
+                ActiveParkAssist = safety.ActiveParkAssist,
+                ElectricHandbrake = safety.ElectricHandbrake,
+                CruiseControl = safety.CruiseControl
             };
-              //  RentInfo..Add(RentModel);
+
+            return model;
+        }
+
+        public CarDetailsViewModel SaveRentDetails(CarDetailsViewModel model,int cardetailsid)
+        {
+            var cardetails = _db.CarDetails.Find(cardetailsid);
+            cardetails.Price = model.Price;
+            Dimension Dim = new Dimension
+            {
+                LuggageBoxCapacity = model.LuggageBoxCapacity,
+                Clearance = model.Clearance,
+                Width = model.Width,
+                Height = model.Height,
+                Wheelbase = model.Wheelbase,
+                Length = model.Length,
+                CarDetailsId=cardetailsid
+            };
+            Exterior exterior = new Exterior
+            {
+                TrimSize = model.TrimSize,
+                RainSensor = model.RainSensor,
+                AutoFoldingMirror = model.AutoFoldingMirror,
+                PanoramaRoof = model.PanoramaRoof,
+                LedDaytimeRunningLamps = model.LedDaytimeRunningLamps,
+                Headlamps = model.Headlamps,
+                FogLambs = model.FogLambs,
+                AutoLighting = model.AutoLighting,
+                RearLambs = model.RearLambs,
+                SunRoof = model.SunRoof,
+                WheelsWithTireSize = model.WheelsWithTireSize,
+                LightSensors = model.LightSensors,
+                PowerMirrors = model.PowerMirrors,
+                PrivacyGlass = model.PrivacyGlass,
+                CarDetailsId = cardetailsid
+            };
+            Interior interior = new Interior
+            {
+                CenterLock = model.CenterLock,
+                RearParkingSensors = model.RearParkingSensors,
+                AmbientLighting = model.AmbientLighting,
+                ElectronicWindow = model.ElectronicWindow,
+                DriveModeSelect = model.DriveModeSelect,
+                LeatherTransmission = model.LeatherTransmission,
+                VariableHeatedDriverPassengerSeat = model.VariableHeatedDriverPassengerSeat,
+                MovableSteeringWheel = model.MovableSteeringWheel,
+                RearViewCamera = model.RearViewCamera,
+                KeylessStartStop = model.KeylessStartStop,
+                BackHolder = model.BackHolder,
+                AutoDimmingMirror = model.AutoDimmingMirror,
+                AutoFoldingBackSeats = model.AutoFoldingBackSeats,
+                Ac = model.Ac,
+                Dashboard = model.Dashboard,
+                FrontCamera = model.FrontCamera,
+                PassengerSeat = model.PassengerSeat,
+                LeatherSteeringWheel = model.LeatherSteeringWheel,
+                PaddleShifters = model.PaddleShifters,
+                NumberOfSeats = model.NumberOfSeats,
+                PowerTailgate = model.PowerTailgate,
+                AcBackSeats = model.AcBackSeats,
+                DriverSeat = model.DriverSeat,
+                FrontParkingSensors = model.FrontParkingSensors,
+                KeylessEntry = model.KeylessEntry,
+                LeatherSeats = model.LeatherSeats,
+                MultiFunction = model.MultiFunction,
+                CarDetailsId = cardetailsid
+            };
+            Multimedia multimedia = new Multimedia
+            {
+                WirlessCharger = model.WirlessCharger,
+                Bluetooth = model.Bluetooth,
+                SmartphoneLinkSystem = model.SmartphoneLinkSystem,
+                Touchscreen = model.Touchscreen,
+                Usb = model.Usb,
+                MultifunctionSteeringWheel = model.MultifunctionSteeringWheel,
+                CdPlayer = model.CdPlayer,
+                Speakers = model.Speakers,
+                NavigationSystem = model.NavigationSystem,
+                Aux = model.Aux,
+                HeadUpDisplay = model.HeadUpDisplay,
+                CarDetailsId = cardetailsid
+            };
+            Performance performance = new Performance
+            {
+                Cylinders = model.Cylinders,
+                FuelTankCapacity = model.FuelTankCapacity,
+                FuelType = model.FuelType,
+                MaxToruqe = model.MaxToruqe,
+                FuelConsumption = model.FuelConsumption,
+                GearShifts = model.GearShifts,
+                Acceleration = model.Acceleration,
+                MaxPower = model.MaxPower,
+                MaxSpeed = model.MaxSpeed,
+                CarDetailsId = cardetailsid
+            };
+            Safety safety = new Safety
+            {
+                TractionControl = model.TractionControl,
+                ElectroncStabilityControl = model.ElectroncStabilityControl,
+                AntiLockBrakingSystem = model.AntiLockBrakingSystem,
+                TirePressureMonitoring = model.TirePressureMonitoring,
+                SpeedLimiter = model.SpeedLimiter,
+                AutoStartStopFunctions = model.AutoStartStopFunctions,
+                PowerAssistedSteering = model.PowerAssistedSteering,
+                Immobilizer = model.Immobilizer,
+                ElectronicBrakeForceDistribution = model.ElectronicBrakeForceDistribution,
+                ChildSeats = model.ChildSeats,
+                HillAssist = model.HillAssist,
+                Airbags = model.Airbags,
+                ActiveParkAssist = model.ActiveParkAssist,
+                ElectricHandbrake = model.ElectricHandbrake,
+                CruiseControl = model.CruiseControl,
+                CarDetailsId = cardetailsid
+            };
+           
+            try
+            {
+                _db.Dimension.Add(Dim);
+                _db.Exterior.Add(exterior);
+                _db.Interior.Add(interior);
+                _db.Multimedia.Add(multimedia);
+                _db.Safety.Add(safety);
+                _db.Performance.Add(performance);
+                _db.SaveChanges();
+                return model;
             }
-            return RentInfo;
+            catch (Exception)
+            {
+                return model ;
+            }
         }
     }
 }

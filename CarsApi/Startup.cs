@@ -46,6 +46,7 @@ namespace CarsApi
             services.AddTransient<IModel, ModelDb>();
             services.AddTransient<IType, TypeDb>();
             services.AddTransient<IHome, HomeDb>();
+            services.AddTransient<IRent, Rent>();
             services.AddTransient<ICarDetails, CarsDetailsDb>();
             services.AddTransient<IModelClass, ModelClassDb>();
             services.AddTransient<IClass, ClassDb>();
