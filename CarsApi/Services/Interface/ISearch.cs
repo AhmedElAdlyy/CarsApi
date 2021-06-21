@@ -8,12 +8,7 @@ namespace CarsApi.Services.Interface
 {
     public interface ISearch
     {
+        List<SearchViewModel> GetAll(decimal minprice, decimal maxprice, int brand, int model, int body, int year);
         List<SearchViewModel> SearchViewModel(int Brand);
-        List<SearchViewModel> SearchViewModel(int Brand, int Model);
-        List<SearchViewModel> SearchViewModel(int Brand, int Model, int Body);
-        List<SearchViewModel> SearchByBody(int Body);
-        List<SearchViewModel> SearchByPrice(int price1,int price2);
-        List<SearchViewModel> SearchByYear(int year);
-        SearchOutputViewModel SearchByAll(SearchFormViewModel searchForm);
     }
 }

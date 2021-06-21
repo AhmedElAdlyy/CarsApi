@@ -30,28 +30,13 @@ namespace CarsApi.Controllers
             {
                 return BadRequest();
             }
-
-        }
-
-        [HttpGet("SearchByBrandModel")]
-        public ActionResult SearchResult(int Brand, int Model)
-        {
-            var Result = _db.SearchViewModel(Brand, Model);
-            if (Result != null)
-            {
-                return Ok(Result);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
         }
 
         [HttpGet("SearchByAll")]
-        public ActionResult SearchResult(int Brand, int Model, int Body)
+        //[Route("SearchByAll/{minprice}/{maxprice}/{brand}/{model}/{body}/{year}")]
+        public ActionResult SearchResult(decimal minprice,decimal maxprice, int brand, int model, int body, int year)
         {
-            var Result = _db.SearchViewModel(Brand, Model, Body);
+            var Result = _db.GetAll(minprice, maxprice,  brand,  model,  body,  year);
             if (Result != null)
             {
                 return Ok(Result);
@@ -60,61 +45,6 @@ namespace CarsApi.Controllers
             {
                 return BadRequest();
             }
-
-        }
-
-        [HttpGet("SearchByBody")]
-        public ActionResult SearchResultBody(int Body)
-        {
-            var Result = _db.SearchByBody(Body);
-            if (Result != null)
-            {
-                return Ok(Result);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-        [HttpGet("SearchByPrice")]
-        public ActionResult SearchResultPrice(int price1,int price2)
-        {
-            var Result = _db.SearchByPrice(price1,price2);
-            if (Result != null)
-            {
-                return Ok(Result);
-            }
-            else
-            {
-                return BadRequest();
-            }
-
-        }
-
-        [HttpGet("SearchByYear")]
-        public ActionResult SearchResultYear(int year)
-        {
-            var Result = _db.SearchByYear(year);
-            if (Result != null)
-            {
-                return Ok(Result);
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        [HttpGet("General")]
-        public ActionResult GeneralSearchResult([FromQuery]SearchFormViewModel model)
-        {
-            var result = _db.SearchByAll(model);
-            if (result.IsSuccess)
-                return Ok(result.SearchResults);
-
-            return BadRequest();
         }
     }
 }
