@@ -85,14 +85,11 @@ namespace CarsApi.Services.Implementation
                 };
             }
 
-
-
-
         }
 
         public List<Brand> GetAllBrands()
         {
-            return _db.Brand.ToList();
+            return _db.Brand.OrderBy(o=>o.Name).ToList();
         }
 
         public Brand GetBrandByID(int brandID)
