@@ -19,17 +19,15 @@ namespace CarsApi.Services.Implementation
 {
     public class UserDb : IUser
     {
-        private UserManager<IdentityUser> _userManager;
+        private UserManager<ApplicationUser> _userManager;
         private IConfiguration _configuration;
         private IMail _mail;
-        private CarsContext _db;
 
-        public UserDb(UserManager<IdentityUser> userManager, IConfiguration configuration, IMail mail, CarsContext db)
+        public UserDb(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMail mail)
         {
             _userManager = userManager;
             _configuration = configuration;
             _mail = mail;
-            _db = db;
         }
 
         public async Task<MessageResponseViewModel> RegisterAsync(RegisterViewModel registeration)
@@ -37,42 +35,24 @@ namespace CarsApi.Services.Implementation
             if (registeration == null)
                 throw new NullReferenceException("User is null");
 
-            var identityUser = new IdentityUser
+            var identityUser = new ApplicationUser
             {
                 Email = registeration.Email,
                 UserName = registeration.Email,
+                FullName = registeration.FullName,
+                NationalId = registeration.NationalId,
+                PersonalLicenceNo = registeration.PersonalLicenceNo
             };
 
             var result = await _userManager.CreateAsync(identityUser, registeration.Password);
 
             if (result.Succeeded)
-            {
-
-                registeration.AspNetUserID = identityUser.Id;
-                
-                if(await AddUserData(registeration))
+                return new MessageResponseViewModel
                 {
-                    var url = await GenerateConfirmationTokenURL(identityUser);
-                    await _mail.SendEmilAsync(identityUser.Email, "Email Confirmation", $"<h1>Welcome to city cars</h1><p>please confirm you email by click the link</p><a href='{url}' > Confirm My Email </a>");
+                    Message = "account created successfully",
+                    IsSuccess = true,
+                };
 
-
-                    return new MessageResponseViewModel
-                    {
-                        Message = "account created successfully",
-                        IsSuccess = true,
-                    };
-                }
-                else
-                {
-                    return new MessageResponseViewModel
-                    {
-                        Message = "Something went wrong",
-                        IsSuccess = false,
-                    };
-                }
-
-                
-            }
 
             return new MessageResponseViewModel
             {
@@ -191,7 +171,7 @@ namespace CarsApi.Services.Implementation
 
         public async Task<MessageResponseViewModel> ResetPasswordAsync(ResetPasswordViewModel reset)
         {
-            IdentityUser user = await _userManager.FindByEmailAsync(reset.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(reset.Email);
             if (user == null)
                 return new MessageResponseViewModel
                 {
@@ -219,40 +199,14 @@ namespace CarsApi.Services.Implementation
             };
         }
 
-        public User GetUserByAspNetUserID(string aspId)
-        {
-            return _db.User.FirstOrDefault(f => f.AspNetUserID == aspId);
-        }
 
-        private async Task<string> GenerateConfirmationTokenURL(IdentityUser identityUser)
+        private async Task<string> GenerateConfirmationTokenURL(ApplicationUser identityUser)
         {
             var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(identityUser);
             var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
             var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
-        }
-
-        private async Task<bool> AddUserData(RegisterViewModel register)
-        {
-            User user = new User
-            {
-                FullName = register.FullName,
-                NationalId = register.NationalId,
-                PersonalLicenceNo = register.PersonalLicenceNo,
-                AspNetUserID = register.AspNetUserID
-            };
-
-            try
-            {
-                _db.User.Add(user);
-                await _db.SaveChangesAsync();
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
     }

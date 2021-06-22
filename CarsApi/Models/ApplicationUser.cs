@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CarsApi.Models
 {
-    public class User
+    public class ApplicationUser:IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-
         public string FullName { get; set; }
 
         [StringLength(14, MinimumLength = 14)]
@@ -21,11 +16,6 @@ namespace CarsApi.Models
 
         public string PersonalLicenceNo { get; set; }
 
-
-        [ForeignKey("AspNetUser")]
-        public string AspNetUserID { get; set; }
-
-        public IdentityUser AspNetUser { get; set; }
         public virtual ICollection<UserCar> UserCars { get; set; }
         public virtual ICollection<UserPhone> UserPhones { get; set; }
     }

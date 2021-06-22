@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsApi.Models
 {
-    public class CarsContext : IdentityDbContext
+    public class CarsContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Brand> Brand { get; set; }
         public DbSet<CarDetails> CarDetails { get; set; }
@@ -23,7 +23,6 @@ namespace CarsApi.Models
         public DbSet<Safety> Safety { get; set; }
         public DbSet<SellingData> SellingData { get; set; }
         public DbSet<Type> Type { get; set; }
-        public DbSet<User> User { get; set; }
         public DbSet<UserCar> UserCar { get; set; }
         public DbSet<UserPhone> UserPhone { get; set; }
 

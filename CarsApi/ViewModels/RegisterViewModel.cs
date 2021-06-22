@@ -28,9 +28,6 @@ namespace CarsApi.ViewModels
         [StringLength(14, MinimumLength = 14)]
         public string NationalId { get; set; }
 
-        public string AspNetUserID { get; set; }
-
-
         public string PersonalLicenceNo { get; set; }
     }
 }
