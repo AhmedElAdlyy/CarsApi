@@ -70,7 +70,7 @@ namespace CarsApi.Controllers
         }
 
         [HttpGet("ByBrand")]
-        public ActionResult GetTypesInBrand([FromQuery] int brandId, string year, int modelId)
+        public ActionResult GetTypesInBrand([FromQuery] int brandId, int year, int modelId)
         {
             List<Type> typesss = _db.GetTypesInBrand(brandId, year, modelId);
 
@@ -78,6 +78,16 @@ namespace CarsApi.Controllers
                 return NotFound();
 
             return Ok(typesss);
+        }
+
+        [HttpGet("ForPreSearch")]
+        public ActionResult GetTypesForPreSearch()
+        {
+            var types = _db.GetTypesForPreSearch();
+            if (types.Count == 0)
+                return NotFound();
+
+            return Ok(types);
         }
     }
 }

@@ -92,7 +92,12 @@ namespace CarsApi.Services.Implementation
             return _db.Type.Include(i => i.Models).FirstOrDefault(f => f.Id == id);
         }
 
-        public List<Type> GetTypesInBrand(int brandId, string year, int modelId)
+        public List<Type> GetTypesForPreSearch()
+        {
+            return _db.Type.Where(w => w.Icon != null).ToList();
+        }
+
+        public List<Type> GetTypesInBrand(int brandId, int year, int modelId)
         {
             List<Model> types = _db.Models
                 .Include(i => i.Brand)
@@ -104,8 +109,8 @@ namespace CarsApi.Services.Implementation
             if (brandId != 0)
                 types = types.Where(w => w.Brand.Id == brandId).ToList();
 
-            if (year != "All")
-                types = types.Where(w => w.Year == int.Parse(year)).ToList();
+            if (year != 0)
+                types = types.Where(w => w.Year == year).ToList();
 
             if (modelId != 0)
                 types = types.Where(w => w.Id == modelId).ToList();

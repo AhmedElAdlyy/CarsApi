@@ -14,6 +14,7 @@ namespace CarsApi.Services.Interface
         MessageResponseViewModel EditType(int id, Type type);
         List<Type> GetAllTypes();
         MessageResponseViewModel AddType(Type type);
-        List<Type> GetTypesInBrand(int brandId, string year, int modelId);
+        List<Type> GetTypesInBrand(int brandId, int year, int modelId);
+        List<Type> GetTypesForPreSearch();
     }
 }
