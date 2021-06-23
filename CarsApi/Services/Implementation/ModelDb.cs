@@ -90,13 +90,13 @@ namespace CarsApi.Services.Implementation
             return _db.Models.ToList();
         }
 
-        public List<ModelViewModel> GetAllModelsInOneBrand(int brandId, string year)
+        public List<ModelViewModel> GetAllModelsInOneBrand(int brandId, int year)
         {
             List<ModelViewModel> ReturnedModels = new List<ModelViewModel>();
             var models = _db.Models.Where(w => w.Brand.Id == brandId).ToList();
 
-            if (year != "All")
-                models = models.Where(w => w.Year == int.Parse(year)).ToList();
+            if (year != 0)
+                models = models.Where(w => w.Year == year).ToList();
 
             foreach (var model in models)
             {
