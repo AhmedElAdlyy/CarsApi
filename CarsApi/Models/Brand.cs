@@ -14,7 +14,8 @@ namespace CarsApi.Models
         public string Name { get; set; }
         public string Nationality { get; set; }
         public string Brief { get; set; }
-        
+        public string Icon { get; set; }
+
 
         public virtual ICollection<Model> Models { get; set; }
     }
