@@ -68,5 +68,16 @@ namespace CarsApi.Controllers
 
             return Ok(type);
         }
+
+        [HttpGet("ByBrand")]
+        public ActionResult GetTypesInBrand([FromQuery] int brandId, string year, int modelId)
+        {
+            List<Type> typesss = _db.GetTypesInBrand(brandId, year, modelId);
+
+            if (typesss.Count == 0)
+                return NotFound();
+
+            return Ok(typesss);
+        }
     }
 }

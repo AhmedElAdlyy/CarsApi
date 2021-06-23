@@ -27,5 +27,15 @@ namespace CarsApi.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("All")]
+        public ActionResult GetAllYears()
+        {
+            var result = _db.GetAllYears();
+            if (result.Count == 0)
+                return BadRequest();
+
+            return Ok(result);
+        }
     }
 }

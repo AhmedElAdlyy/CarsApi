@@ -8,5 +8,6 @@ namespace CarsApi.Services.Interface
     public interface IYear
     {
         List<string> GetYearsOfModelsInBrand(int brandId);
+        List<string> GetAllYears();
     }
 }

@@ -51,7 +51,6 @@ namespace CarsApi.Controllers
 
                 return BadRequest(result);
             }
-
             return BadRequest("Data is not correct");
         }
 

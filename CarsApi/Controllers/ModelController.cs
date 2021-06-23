@@ -82,5 +82,15 @@ namespace CarsApi.Controllers
             return Ok(models);
         }
 
+        [HttpGet("AllModels")]
+        public ActionResult GetAllModelsVm()
+        {
+            var models = _db.GetAllModelsVM();
+            if (models.Count == 0)
+                return BadRequest();
+
+            return Ok(models);
+        }
+
     }
 }

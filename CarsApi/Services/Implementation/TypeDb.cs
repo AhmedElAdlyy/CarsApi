@@ -92,6 +92,32 @@ namespace CarsApi.Services.Implementation
             return _db.Type.Include(i => i.Models).FirstOrDefault(f => f.Id == id);
         }
 
+        public List<Type> GetTypesInBrand(int brandId, string year, int modelId)
+        {
+            List<Model> types = _db.Models
+                .Include(i => i.Brand)
+                .Include(i => i.Type)
+                .ToList();
+
+            List<Type> Types = new List<Type>();
+
+            if (brandId != 0)
+                types = types.Where(w => w.Brand.Id == brandId).ToList();
+
+            if (year != "All")
+                types = types.Where(w => w.Year == int.Parse(year)).ToList();
+
+            if (modelId != 0)
+                types = types.Where(w => w.Id == modelId).ToList();
+
+
+
+            Types = types.Select(s => s.Type).Distinct().ToList();
+            Types.ForEach(f => f.Models = null);
+
+            return Types;
+        }
+
         private bool IsFilled(Type type)
         {
             PropertyInfo[] props = type.GetType().GetProperties();

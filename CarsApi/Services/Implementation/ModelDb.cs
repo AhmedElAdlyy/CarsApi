@@ -93,7 +93,7 @@ namespace CarsApi.Services.Implementation
         public List<ModelViewModel> GetAllModelsInOneBrand(int brandId, string year)
         {
             List<ModelViewModel> ReturnedModels = new List<ModelViewModel>();
-            var models =  _db.Models.Where(w => w.Brand.Id == brandId).ToList();
+            var models = _db.Models.Where(w => w.Brand.Id == brandId).ToList();
 
             if (year != "All")
                 models = models.Where(w => w.Year == int.Parse(year)).ToList();
@@ -107,6 +107,24 @@ namespace CarsApi.Services.Implementation
                 };
                 ReturnedModels.Add(modelView);
             }
+            return ReturnedModels;
+        }
+
+        public List<ModelViewModel> GetAllModelsVM()
+        {
+            List<ModelViewModel> ReturnedModels = new List<ModelViewModel>();
+            var models = GetAllModels();
+
+            foreach (var model in models)
+            {
+                ModelViewModel modelView = new ModelViewModel
+                {
+                    Id = model.Id,
+                    Name = model.Name + " - " + model.Year
+                };
+                ReturnedModels.Add(modelView);
+            }
+
             return ReturnedModels;
         }
 

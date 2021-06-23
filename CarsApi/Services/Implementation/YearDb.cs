@@ -17,6 +17,22 @@ namespace CarsApi.Services.Implementation
             _db = db;
         }
 
+        public List<string> GetAllYears()
+        {
+            List<string> ReturnedYears = new List<string>();
+            var years = _db.Models
+                .Select(s => s.Year)
+                .Distinct()
+                .ToList();
+
+            foreach (var year in years)
+            {
+                ReturnedYears.Add(year.ToString());
+            }
+
+            return ReturnedYears;
+        }
+
         public List<string> GetYearsOfModelsInBrand(int brandId)
         {
             List<string> ReturnedYears = new List<string>();

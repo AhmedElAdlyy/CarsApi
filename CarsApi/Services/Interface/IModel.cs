@@ -14,5 +14,7 @@ namespace CarsApi.Services.Interface
         List<Model> GetAllModels();
         MessageResponseViewModel AddModel(Model model);
         List<ModelViewModel> GetAllModelsInOneBrand(int brandId, string year);
+        List<ModelViewModel> GetAllModelsVM();
+
     }
 }
