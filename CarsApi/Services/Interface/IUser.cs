@@ -16,5 +16,6 @@ namespace CarsApi.Services.Interface
         Task<MessageResponseViewModel> ResetPasswordAsync(ResetPasswordViewModel reset);
         Task<UserProfileViewModel> GetProfileData(string userId);
         Task<MessageResponseViewModel> OwingCar(string userId, int carDetailsId);
+        Task<UserCars> GetAllUserCars(string userId);
     }
 }

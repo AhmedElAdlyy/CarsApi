@@ -275,6 +275,52 @@ namespace CarsApi.Services.Implementation
 
         }
 
+        public async Task<UserCars> GetAllUserCars(string userId)
+        {
+            UserCars userCars = new UserCars();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new UserCars
+                {
+                    IsSuccess = false
+                };
+
+            var carsOfUser = _db.UserCar
+                .Include(i=>i.CarDetails)
+                .Include(i => i.CarDetails.CarPhotos)
+                .Include(i => i.CarDetails.ModelClass)
+                .Include(i => i.CarDetails.ModelClass.Model)
+                .Include(i => i.CarDetails.ModelClass.Model.Brand)
+                .Where(w => w.UserId == userId)
+                .ToList();
+
+            foreach (var oneCar in carsOfUser)
+            {
+                string photoName = oneCar.CarDetails.CarPhotos.Select(s => s.PhotoName).FirstOrDefault();
+                if(photoName == null)
+                {
+                    photoName = _db.CarPhoto
+                        .Include(i => i.CarDetails)
+                        .Include(i => i.CarDetails.ModelClass)
+                        .Where(w => w.CarDetails.ModelClass.Id == oneCar.CarDetails.ModelClass.Id && w.CarDetails.IsFromSystem == true)
+                        .Select(s => s.PhotoName).FirstOrDefault();
+                }
+
+                ChooseCarViewModel car = new ChooseCarViewModel
+                {
+                    CarDetailsId = oneCar.CarDetails.Id,
+                    CarName = oneCar.CarDetails.ModelClass.Model.Brand.Name+" "+oneCar.CarDetails.ModelClass.Model.Name+" "+oneCar.CarDetails.ModelClass.Model.Year,
+                    ClassName = oneCar.CarDetails.ModelClass.ClassName,
+                    ImgName = photoName
+                };
+                userCars.Cars.Add(car);
+            }
+
+            userCars.IsSuccess = true;
+            return userCars;
+        }
+
 
         private async Task<string> GenerateConfirmationTokenURL(ApplicationUser identityUser)
         {
@@ -285,6 +331,6 @@ namespace CarsApi.Services.Implementation
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
         }
 
-
+        
     }
 }

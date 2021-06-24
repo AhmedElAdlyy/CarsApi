@@ -139,5 +139,18 @@ namespace CarsApi.Controllers
             return BadRequest(result);
         }
 
+        [HttpGet("UserCars")]
+        [Authorize]
+        public async Task<ActionResult> GetUserCars()
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var cars = await _db.GetAllUserCars(id);
+            if (cars.IsSuccess)
+                return Ok(cars.Cars);
+
+            return BadRequest();
+
+        }
+
     }
 }
