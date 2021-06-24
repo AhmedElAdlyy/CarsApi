@@ -22,14 +22,34 @@ namespace CarsApi.Services.Implementation
         private UserManager<ApplicationUser> _userManager;
         private IConfiguration _configuration;
         private IMail _mail;
+        private CarsContext _db;
 
-        public UserDb(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMail mail)
+        public UserDb(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMail mail, CarsContext db)
         {
             _userManager = userManager;
             _configuration = configuration;
             _mail = mail;
+            _db = db;
         }
+        public async Task<UserProfileViewModel> GetProfileData(string userId)
+        {
+            UserProfileViewModel userProfileData = new UserProfileViewModel();
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new UserProfileViewModel { IsSuccess = false };
 
+            var phones =  _db.UserPhone.Where(w => w.UserId == userId);
+            foreach (var phone in phones)
+            {
+                userProfileData.Phones.Add(phone.Number);
+            }
+
+            userProfileData.IsSuccess = true;
+            userProfileData.Fullname = user.FullName;
+            userProfileData.Email = user.Email;
+
+            return userProfileData;
+        }
         public async Task<MessageResponseViewModel> RegisterAsync(RegisterViewModel registeration)
         {
             if (registeration == null)
@@ -86,7 +106,6 @@ namespace CarsApi.Services.Implementation
                 };
             }
 
-
             var Claims = new[]
             {
                 new Claim("Email",login.Email),
@@ -94,10 +113,8 @@ namespace CarsApi.Services.Implementation
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
-            var token = new JwtSecurityToken(_configuration["AuthSettings:Issuer"],_configuration["AuthSettings:Issuer"], claims: Claims, expires: DateTime.Now.AddMinutes(120), signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var token = new JwtSecurityToken(_configuration["AuthSettings:Issuer"], _configuration["AuthSettings:Issuer"], claims: Claims, expires: DateTime.Now.AddMinutes(120), signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
             string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            
 
             return new MessageResponseViewModel
             {
@@ -105,7 +122,6 @@ namespace CarsApi.Services.Implementation
                 IsSuccess = true,
                 ExpireDate = token.ValidTo
             };
-
         }
 
         public async Task<MessageResponseViewModel> ConfirmEmailAsync(string userId, string token)

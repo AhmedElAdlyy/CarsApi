@@ -14,5 +14,6 @@ namespace CarsApi.Services.Interface
         Task<MessageResponseViewModel> ConfirmEmailAsync(string userId, string token);
         Task<MessageResponseViewModel> ForgetPasswordAsync(string email);
         Task<MessageResponseViewModel> ResetPasswordAsync(ResetPasswordViewModel reset);
+        Task<UserProfileViewModel> GetProfileData(string userId);
     }
 }

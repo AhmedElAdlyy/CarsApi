@@ -1,11 +1,13 @@
 ﻿using CarsApi.Models;
 using CarsApi.Services.Interface;
 using CarsApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CarsApi.Controllers
@@ -109,7 +111,17 @@ namespace CarsApi.Controllers
 
                 return BadRequest();
             }
+            return BadRequest();
+        }
 
+        [HttpGet("Profile")]
+        [Authorize]
+        public async Task<ActionResult> GetUserProfileData()
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var profile = await _db.GetProfileData(id);
+            if (profile.IsSuccess == true)
+                return Ok(profile);
 
             return BadRequest();
         }
