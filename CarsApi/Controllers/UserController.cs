@@ -57,7 +57,7 @@ namespace CarsApi.Controllers
 
                 if (result.IsSuccess)
                 {
-                    await _mailService.SendEmilAsync(login.Email, "Confirm Email", "<h1>This is Confirmation</h1><p>New login at "+DateTime.Now+ "</p>");
+                    await _mailService.SendEmilAsync(login.Email, "Confirm Email", "<h1>This is Confirmation</h1><p>New login at " + DateTime.Now + "</p>");
                     return Ok(result);
                 }
                 else
@@ -124,6 +124,19 @@ namespace CarsApi.Controllers
                 return Ok(profile);
 
             return BadRequest();
+        }
+
+        [HttpPost("OwingCar")]
+        [Authorize]
+        public async Task<ActionResult> OwingUserCar([FromBody] int carDetailsId)
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var result = await _db.OwingCar(id, carDetailsId);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
         }
 
     }

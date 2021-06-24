@@ -4,6 +4,7 @@ using CarsApi.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -38,7 +39,7 @@ namespace CarsApi.Services.Implementation
             if (user == null)
                 return new UserProfileViewModel { IsSuccess = false };
 
-            var phones =  _db.UserPhone.Where(w => w.UserId == userId);
+            var phones = _db.UserPhone.Where(w => w.UserId == userId);
             foreach (var phone in phones)
             {
                 userProfileData.Phones.Add(phone.Number);
@@ -215,6 +216,65 @@ namespace CarsApi.Services.Implementation
             };
         }
 
+        public async Task<MessageResponseViewModel> OwingCar(string userId, int carDetailsId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "User Not Found"
+                };
+
+            var car = _db.CarDetails
+                .Include(i => i.ModelClass)
+                .FirstOrDefault(f => f.Id == carDetailsId);
+
+            if (car == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "Car Not Found"
+                };
+
+            try
+            {
+                CarDetails details = new CarDetails
+                {
+                    IsFromSystem = false,
+                    ModelClassId = car.ModelClassId
+                };
+
+                _db.CarDetails.Add(details);
+                await _db.SaveChangesAsync();
+
+                UserCar userCar = new UserCar
+                {
+                    UserId = userId,
+                    CarDetailsId = details.Id
+                };
+
+                _db.UserCar.Add(userCar);
+                await _db.SaveChangesAsync();
+
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = true,
+                    Message = "Car Added To User successfully"
+                };
+            }
+            catch (Exception)
+            {
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong"
+                };
+
+            }
+
+        }
+
 
         private async Task<string> GenerateConfirmationTokenURL(ApplicationUser identityUser)
         {
@@ -224,6 +284,7 @@ namespace CarsApi.Services.Implementation
 
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
         }
+
 
     }
 }
