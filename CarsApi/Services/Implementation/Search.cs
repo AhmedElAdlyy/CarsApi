@@ -17,32 +17,6 @@ namespace CarsApi.Services.Implementation
             _db = db;
         }
 
-        private List<CarDetails> FilterByMinPrice(List<CarDetails> myCars, decimal minp)
-        {
-            return myCars.Where(w => w.Price >= minp ).ToList();
-        }
-        private List<CarDetails> FilterByMaxPrice(List<CarDetails> myCars, decimal maxp)
-        {
-            return myCars.Where(w => w.Price <= maxp).ToList();
-        }
-        private List<CarDetails> FilterByBrand(List<CarDetails> myCars, int br)
-        {
-            return myCars.Where(w => w.ModelClass.Model.Brand.Id == br).ToList();
-        }
-
-        private List<CarDetails> FilterByModel(List<CarDetails> myCars, int Md)
-        {
-            return myCars.Where(w => w.ModelClass.Model.Id == Md).ToList();
-        }
-        private List<CarDetails> FilterByBody(List<CarDetails> myCars, int body)
-        {
-            return myCars.Where(w => w.ModelClass.Model.Type.Id == body).ToList();
-        }
-        private List<CarDetails> FilterByYear(List<CarDetails> myCars, int year)
-        {
-            return myCars.Where(w => w.ModelClass.Model.Year == year).ToList();
-        }
-
        public List<SearchViewModel> GetAll(decimal minprice, decimal maxprice, int brand, int model, int body, int year)
         {
             List<SearchViewModel> modelPrices = new List<SearchViewModel>();
@@ -169,6 +143,34 @@ namespace CarsApi.Services.Implementation
             }
             return AllRent;
 
+        }
+
+
+
+        private List<CarDetails> FilterByMinPrice(List<CarDetails> myCars, decimal minp)
+        {
+            return myCars.Where(w => w.Price >= minp).ToList();
+        }
+        private List<CarDetails> FilterByMaxPrice(List<CarDetails> myCars, decimal maxp)
+        {
+            return myCars.Where(w => w.Price <= maxp).ToList();
+        }
+        private List<CarDetails> FilterByBrand(List<CarDetails> myCars, int br)
+        {
+            return myCars.Where(w => w.ModelClass.Model.Brand.Id == br).ToList();
+        }
+
+        private List<CarDetails> FilterByModel(List<CarDetails> myCars, int Md)
+        {
+            return myCars.Where(w => w.ModelClass.Model.Id == Md).ToList();
+        }
+        private List<CarDetails> FilterByBody(List<CarDetails> myCars, int body)
+        {
+            return myCars.Where(w => w.ModelClass.Model.Type.Id == body).ToList();
+        }
+        private List<CarDetails> FilterByYear(List<CarDetails> myCars, int year)
+        {
+            return myCars.Where(w => w.ModelClass.Model.Year == year).ToList();
         }
     }
 }

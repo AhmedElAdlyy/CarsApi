@@ -134,7 +134,7 @@ namespace CarsApi.Services.Implementation
             return model;
         }
 
-        public CarDetailsViewModel SaveRentDetails(CarDetailsViewModel model,int cardetailsid)
+        public MessageResponseViewModel SaveRentDetails(CarDetailsViewModel model,int cardetailsid)
         {
             var cardetails = _db.CarDetails.Find(cardetailsid);
             cardetails.Price = model.Price;
@@ -254,11 +254,11 @@ namespace CarsApi.Services.Implementation
                 _db.Safety.Add(safety);
                 _db.Performance.Add(performance);
                 _db.SaveChanges();
-                return model;
+                return new MessageResponseViewModel { IsSuccess=true,Message="Saved Data"} ;
             }
             catch (Exception)
             {
-                return model ;
+                return new MessageResponseViewModel { IsSuccess = false, Message = "Not Saved Data" };
             }
         }
     }
