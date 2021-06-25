@@ -4,6 +4,7 @@ using CarsApi.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,14 +23,34 @@ namespace CarsApi.Services.Implementation
         private UserManager<ApplicationUser> _userManager;
         private IConfiguration _configuration;
         private IMail _mail;
+        private CarsContext _db;
 
-        public UserDb(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMail mail)
+        public UserDb(UserManager<ApplicationUser> userManager, IConfiguration configuration, IMail mail, CarsContext db)
         {
             _userManager = userManager;
             _configuration = configuration;
             _mail = mail;
+            _db = db;
         }
+        public async Task<UserProfileViewModel> GetProfileData(string userId)
+        {
+            UserProfileViewModel userProfileData = new UserProfileViewModel();
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new UserProfileViewModel { IsSuccess = false };
 
+            var phones = _db.UserPhone.Where(w => w.UserId == userId);
+            foreach (var phone in phones)
+            {
+                userProfileData.Phones.Add(phone.Number);
+            }
+
+            userProfileData.IsSuccess = true;
+            userProfileData.Fullname = user.FullName;
+            userProfileData.Email = user.Email;
+
+            return userProfileData;
+        }
         public async Task<MessageResponseViewModel> RegisterAsync(RegisterViewModel registeration)
         {
             if (registeration == null)
@@ -86,7 +107,6 @@ namespace CarsApi.Services.Implementation
                 };
             }
 
-
             var Claims = new[]
             {
                 new Claim("Email",login.Email),
@@ -94,10 +114,8 @@ namespace CarsApi.Services.Implementation
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
-            var token = new JwtSecurityToken(_configuration["AuthSettings:Issuer"],_configuration["AuthSettings:Issuer"], claims: Claims, expires: DateTime.Now.AddMinutes(120), signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
+            var token = new JwtSecurityToken(_configuration["AuthSettings:Issuer"], _configuration["AuthSettings:Issuer"], claims: Claims, expires: DateTime.Now.AddMinutes(120), signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
             string tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            
 
             return new MessageResponseViewModel
             {
@@ -105,7 +123,6 @@ namespace CarsApi.Services.Implementation
                 IsSuccess = true,
                 ExpireDate = token.ValidTo
             };
-
         }
 
         public async Task<MessageResponseViewModel> ConfirmEmailAsync(string userId, string token)
@@ -199,6 +216,111 @@ namespace CarsApi.Services.Implementation
             };
         }
 
+        public async Task<MessageResponseViewModel> OwingCar(string userId, int carDetailsId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "User Not Found"
+                };
+
+            var car = _db.CarDetails
+                .Include(i => i.ModelClass)
+                .FirstOrDefault(f => f.Id == carDetailsId);
+
+            if (car == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "Car Not Found"
+                };
+
+            try
+            {
+                CarDetails details = new CarDetails
+                {
+                    IsFromSystem = false,
+                    ModelClassId = car.ModelClassId
+                };
+
+                _db.CarDetails.Add(details);
+                await _db.SaveChangesAsync();
+
+                UserCar userCar = new UserCar
+                {
+                    UserId = userId,
+                    CarDetailsId = details.Id
+                };
+
+                _db.UserCar.Add(userCar);
+                await _db.SaveChangesAsync();
+
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = true,
+                    Message = "Car Added To User successfully"
+                };
+            }
+            catch (Exception)
+            {
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong"
+                };
+
+            }
+
+        }
+
+        public async Task<UserCars> GetAllUserCars(string userId)
+        {
+            UserCars userCars = new UserCars();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new UserCars
+                {
+                    IsSuccess = false
+                };
+
+            var carsOfUser = _db.UserCar
+                .Include(i=>i.CarDetails)
+                .Include(i => i.CarDetails.CarPhotos)
+                .Include(i => i.CarDetails.ModelClass)
+                .Include(i => i.CarDetails.ModelClass.Model)
+                .Include(i => i.CarDetails.ModelClass.Model.Brand)
+                .Where(w => w.UserId == userId)
+                .ToList();
+
+            foreach (var oneCar in carsOfUser)
+            {
+                string photoName = oneCar.CarDetails.CarPhotos.Select(s => s.PhotoName).FirstOrDefault();
+                if(photoName == null)
+                {
+                    photoName = _db.CarPhoto
+                        .Include(i => i.CarDetails)
+                        .Include(i => i.CarDetails.ModelClass)
+                        .Where(w => w.CarDetails.ModelClass.Id == oneCar.CarDetails.ModelClass.Id && w.CarDetails.IsFromSystem == true)
+                        .Select(s => s.PhotoName).FirstOrDefault();
+                }
+
+                ChooseCarViewModel car = new ChooseCarViewModel
+                {
+                    CarDetailsId = oneCar.CarDetails.Id,
+                    CarName = oneCar.CarDetails.ModelClass.Model.Brand.Name+" "+oneCar.CarDetails.ModelClass.Model.Name+" "+oneCar.CarDetails.ModelClass.Model.Year,
+                    ClassName = oneCar.CarDetails.ModelClass.ClassName,
+                    ImgName = photoName
+                };
+                userCars.Cars.Add(car);
+            }
+
+            userCars.IsSuccess = true;
+            return userCars;
+        }
+
 
         private async Task<string> GenerateConfirmationTokenURL(ApplicationUser identityUser)
         {
@@ -209,5 +331,6 @@ namespace CarsApi.Services.Implementation
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
         }
 
+        
     }
 }

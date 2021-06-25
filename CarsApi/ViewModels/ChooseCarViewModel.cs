@@ -5,6 +5,11 @@ using System.Threading.Tasks;
 
 namespace CarsApi.ViewModels
 {
+    public class UserCars
+    {
+        public bool IsSuccess { get; set; }
+        public List<ChooseCarViewModel> Cars = new List<ChooseCarViewModel>();
+    }
     public class ChooseCarViewModel
     {
         public bool IsSuccess { get; set; }

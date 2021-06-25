@@ -1,11 +1,13 @@
 ﻿using CarsApi.Models;
 using CarsApi.Services.Interface;
 using CarsApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CarsApi.Controllers
@@ -55,7 +57,7 @@ namespace CarsApi.Controllers
 
                 if (result.IsSuccess)
                 {
-                    await _mailService.SendEmilAsync(login.Email, "Confirm Email", "<h1>This is Confirmation</h1><p>New login at "+DateTime.Now+ "</p>");
+                    await _mailService.SendEmilAsync(login.Email, "Confirm Email", "<h1>This is Confirmation</h1><p>New login at " + DateTime.Now + "</p>");
                     return Ok(result);
                 }
                 else
@@ -109,9 +111,45 @@ namespace CarsApi.Controllers
 
                 return BadRequest();
             }
+            return BadRequest();
+        }
 
+        [HttpGet("Profile")]
+        [Authorize]
+        public async Task<ActionResult> GetUserProfileData()
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var profile = await _db.GetProfileData(id);
+            if (profile.IsSuccess == true)
+                return Ok(profile);
 
             return BadRequest();
+        }
+
+        [HttpPost("OwingCar")]
+        [Authorize]
+        public async Task<ActionResult> OwingUserCar([FromBody] int carDetailsId)
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var result = await _db.OwingCar(id, carDetailsId);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [HttpGet("UserCars")]
+        [Authorize]
+        public async Task<ActionResult> GetUserCars()
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var cars = await _db.GetAllUserCars(id);
+            if (cars.IsSuccess)
+                return Ok(cars.Cars);
+
+            return BadRequest();
+
         }
 
     }
