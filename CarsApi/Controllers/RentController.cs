@@ -36,7 +36,7 @@ namespace CarsApi.Controllers
         public ActionResult SaveRentResult([FromBody] CarDetailsViewModel model, [FromQuery] int cardetailsid)
         {
             var Result = _db.SaveRentDetails(model, cardetailsid);
-            if (Result != null)
+            if (Result.IsSuccess)
             {
                 return Ok(Result);
             }

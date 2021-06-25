@@ -9,6 +9,6 @@ namespace CarsApi.Services.Interface
     public interface IRent
     {
        CarDetailsViewModel EditRentDetails(int UserId);
-       CarDetailsViewModel SaveRentDetails(CarDetailsViewModel model, int cardetailsid);
+       MessageResponseViewModel SaveRentDetails(CarDetailsViewModel model, int cardetailsid);
     }
 }
