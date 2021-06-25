@@ -38,7 +38,7 @@ namespace CarsApi
         {
             services.AddDbContext<CarsContext>(op =>
             {
-                op.UseSqlServer(Configuration.GetConnectionString("Salma"));
+                op.UseSqlServer(Configuration.GetConnectionString("Ahmed"));
             });
             services.AddTransient<IUser, UserDb>();
             services.AddTransient<ISearch, Search>();
@@ -51,6 +51,7 @@ namespace CarsApi
             services.AddTransient<IModelClass, ModelClassDb>();
             services.AddTransient<IClass, ClassDb>();
             services.AddTransient<IYear, YearDb>();
+            services.AddTransient<IGeneral, GenralDb>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
