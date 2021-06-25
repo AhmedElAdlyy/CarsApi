@@ -12,6 +12,7 @@ namespace CarsApi.ViewModels
         public string ClassName { get; set; }
         public decimal? Price { get; set; }
         public string CarType { get; set; }
+        public int CarDetailsId { get; set; }
 
         //dimensions
         public double? LuggageBoxCapacity { get; set; }

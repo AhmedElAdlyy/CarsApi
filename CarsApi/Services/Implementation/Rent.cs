@@ -42,6 +42,7 @@ namespace CarsApi.Services.Implementation
 
             CarDetailsViewModel model = new CarDetailsViewModel
             {
+                CarDetailsId = details.Id,
                 IsSuccess = true,
                 Price = details.Price,
                 CarName = details.ModelClass.Model.Brand.Name + " " + details.ModelClass.Model.Name + " " + details.ModelClass.Model.Year,

@@ -29,7 +29,7 @@ namespace CarsApi.Controllers
 
             return Ok(result);
         }
-        
+
 
         [HttpGet("RentCarDetailsId")]
         public ActionResult GetRentCarDetails(int carDetailsId)

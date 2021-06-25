@@ -18,10 +18,10 @@ namespace CarsApi.Controllers
         {
             _db = db;
         }
-        [HttpGet("RentInfo")]
-        public ActionResult RentResult(int UserId)
+        [HttpGet("RentInfo/{carDetailsId}")]
+        public ActionResult RentResult(int carDetailsId)
         {
-            var Result = _db.EditRentDetails(UserId);
+            var Result = _db.EditRentDetails(carDetailsId);
             if (Result != null)
             {
                 return Ok(Result);
@@ -33,7 +33,7 @@ namespace CarsApi.Controllers
         }
 
         [HttpPut("SaveRent")]
-        public ActionResult SaveRentResult([FromBody]CarDetailsViewModel model,[FromQuery] int cardetailsid)
+        public ActionResult SaveRentResult([FromBody] CarDetailsViewModel model, [FromQuery] int cardetailsid)
         {
             var Result = _db.SaveRentDetails(model, cardetailsid);
             if (Result != null)
@@ -44,7 +44,6 @@ namespace CarsApi.Controllers
             {
                 return BadRequest();
             }
-
         }
     }
 }
