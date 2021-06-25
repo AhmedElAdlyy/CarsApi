@@ -29,6 +29,18 @@ namespace CarsApi.Controllers
 
             return Ok(result);
         }
+        
+
+        [HttpGet("RentCarDetailsId")]
+        public ActionResult GetRentCarDetails(int carDetailsId)
+        {
+            var result = _db.ViewCarRentDetails(carDetailsId);
+
+            if (result.IsSuccess == false)
+                return NotFound();
+
+            return Ok(result);
+        }
 
         [HttpGet("photos/{carDetailsId}")]
         public ActionResult GetCarImages(int carDetailsId)

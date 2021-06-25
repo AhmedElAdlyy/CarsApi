@@ -1,4 +1,5 @@
-﻿using CarsApi.ViewModels;
+﻿using CarsApi.Models;
+using CarsApi.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace CarsApi.Services.Interface
     public interface ICarDetails
     {
         CarDetailsViewModel ViewCarDetails(int carDetailsId);
+        CarDetailsViewModel ViewCarRentDetails(int carDetailsId);
         ImagesViewModel GetImages(int carDetailsId);
     }
 }

@@ -45,6 +45,34 @@ namespace CarsApi.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet("UsedCars")]
+        public ActionResult SearchRent(decimal minprice, decimal maxprice, int brand, int model, int body, int year)
+        {
+            var Result = _db.GetRent(minprice, maxprice, brand, model, body, year);
+            if (Result != null)
+            {
+                return Ok(Result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("AllRent")]
+        public ActionResult SearchResult()
+        {
+            var Result = _db.SearchViewModel();
+            if (Result != null)
+            {
+                return Ok(Result);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
     }
 }
 
