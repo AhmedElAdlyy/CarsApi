@@ -38,7 +38,7 @@ namespace CarsApi
         {
             services.AddDbContext<CarsContext>(op =>
             {
-                op.UseSqlServer(Configuration.GetConnectionString("Ahmed"));
+                op.UseSqlServer(Configuration.GetConnectionString("Salma"));
             });
             services.AddTransient<IUser, UserDb>();
             services.AddTransient<ISearch, Search>();

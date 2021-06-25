@@ -48,6 +48,7 @@ namespace CarsApi.Services.Implementation
             List<SearchViewModel> modelPrices = new List<SearchViewModel>();
             List<CarDetails> Cars = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
                 .Include(a => a.ModelClass.Model.Type).Include(a=>a.ModelClass.Model.Brand).Include(a => a.ModelClass.Class)
+                .Where(a=>a.IsFromSystem==true)
                 .ToList();
 
             if (minprice != 0)
@@ -104,6 +105,71 @@ namespace CarsApi.Services.Implementation
             return modelPrices;
         }
 
+        public List<SearchViewModel> GetRent(decimal minprice, decimal maxprice, int brand, int model, int body, int year)
+        {
+            List<SearchViewModel> modelPrices = new List<SearchViewModel>();
+            List<CarDetails> Cars = _db.CarDetails.Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
+                .Include(a => a.ModelClass.Model.Type).Include(a => a.ModelClass.Model.Brand).Include(a => a.ModelClass.Class)
+                .Where(a=>a.IsFromSystem==false)
+                .ToList();
+
+            if (minprice != 0)
+                Cars = FilterByMinPrice(Cars, minprice);
+            if (maxprice != 0)
+                Cars = FilterByMaxPrice(Cars, maxprice);
+            if (brand != 0)
+                Cars = FilterByBrand(Cars, brand);
+            if (model != 0)
+                Cars = FilterByModel(Cars, model);
+            if (body != 0)
+                Cars = FilterByBody(Cars, body);
+            if (year != 0)
+                Cars = FilterByYear(Cars, year);
+
+            foreach (var M in Cars)
+            {
+                SearchViewModel model_Price = new SearchViewModel
+                {
+                    Model = M.ModelClass.Model.Name,
+                    price = (decimal)M.Price,
+                    Brand = M.ModelClass.Model.Brand.Name,
+                    Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    ClassName = M.ModelClass.ClassName,
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.ModelClass.Model.Id
+                };
+
+                modelPrices.Add(model_Price);
+            }
+            return modelPrices;
+
+        }
+
+        public List<SearchViewModel> SearchViewModel()
+        {
+            List<SearchViewModel> AllRent = new List<SearchViewModel>();
+            List<CarDetails> Cars = _db.CarDetails
+                .Include(a => a.ModelClass).Include(a => a.ModelClass.Model).Include(a => a.CarPhotos)
+                .Include(a => a.ModelClass.Model.Type).Include(a => a.ModelClass.Model.Brand).Include(a => a.ModelClass.Class)
+                .Where(a => a.IsFromSystem==false).ToList();
+            foreach (var M in Cars)
+            {
+                SearchViewModel model_Price = new SearchViewModel
+                {
+                    Model = M.ModelClass.Model.Name,
+                    price = (decimal)M.Price,
+                    Brand = M.ModelClass.Model.Brand.Name,
+                    Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
+                    ClassName = M.ModelClass.ClassName,
+                    modelclassId = M.ModelClass.Id,
+                    modelId = M.ModelClass.Model.Id
+                };
+
+                AllRent.Add(model_Price);
+            }
+            return AllRent;
+
+        }
     }
 }
 
