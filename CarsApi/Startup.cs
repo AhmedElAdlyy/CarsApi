@@ -38,7 +38,8 @@ namespace CarsApi
         {
             services.AddDbContext<CarsContext>(op =>
             {
-                op.UseSqlServer(Configuration.GetConnectionString("Ahmed"));
+                op.UseSqlServer(Configuration.GetConnectionString("Ahmed"),
+                    sqlServerOptions => sqlServerOptions.CommandTimeout(60));
             });
             services.AddTransient<IUser, UserDb>();
             services.AddTransient<ISearch, Search>();
@@ -53,6 +54,7 @@ namespace CarsApi
             services.AddTransient<IYear, YearDb>();
             services.AddTransient<IGeneral, GenralDb>();
             services.AddTransient<ISell, SellDb>();
+            services.AddTransient<ISuggest, SuggestDb>();
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequireDigit = true;
@@ -70,7 +72,7 @@ namespace CarsApi
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime=true,
+                    ValidateLifetime = true,
                     RequireExpirationTime = true,
                     ValidIssuer = Configuration["AuthSettings:Issuer"],
                     ValidAudience = Configuration["AuthSettings:Issuer"],
