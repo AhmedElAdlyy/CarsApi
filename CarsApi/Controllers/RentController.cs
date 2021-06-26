@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CarsApi.Controllers
 {
@@ -19,6 +20,7 @@ namespace CarsApi.Controllers
             _db = db;
         }
         [HttpGet("RentInfo/{carDetailsId}")]
+        [Authorize]
         public ActionResult RentResult(int carDetailsId)
         {
             var Result = _db.EditRentDetails(carDetailsId);
@@ -33,6 +35,7 @@ namespace CarsApi.Controllers
         }
 
         [HttpPut("SaveRent")]
+        [Authorize]
         public ActionResult SaveRentResult([FromBody] CarDetailsViewModel model, [FromQuery] int cardetailsid)
         {
             var Result = _db.SaveRentDetails(model, cardetailsid);
