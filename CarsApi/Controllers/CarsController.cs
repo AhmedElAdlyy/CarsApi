@@ -53,6 +53,17 @@ namespace CarsApi.Controllers
             return Ok(result.Images);
         }
 
+        [HttpGet("GetCars")]
+        public ActionResult GetAllCarsClassified ([FromQuery]int rent)
+        {
+            var result = _db.GetAllCarsClassified(rent);
+
+            if (result.IsSuccess)
+                return Ok(result.SearchResults);
+
+            return NotFound();
+        }
+
 
     }
 }

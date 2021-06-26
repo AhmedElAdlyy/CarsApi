@@ -12,5 +12,8 @@ namespace CarsApi.Services.Interface
         CarDetailsViewModel ViewCarDetails(int carDetailsId);
         CarDetailsViewModel ViewCarRentDetails(int carDetailsId);
         ImagesViewModel GetImages(int carDetailsId);
+        SearchOutputViewModel GetAllCarsClassified(int Rent);
+        
+
     }
 }

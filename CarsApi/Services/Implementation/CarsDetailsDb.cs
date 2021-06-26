@@ -18,6 +18,50 @@ namespace CarsApi.Services.Implementation
             _db = db;
         }
 
+        public SearchOutputViewModel GetAllCarsClassified(int rent)
+        {
+            SearchOutputViewModel result = new SearchOutputViewModel();
+
+            var cars = GetAllCars();
+
+
+            if (rent == 1)
+                cars = cars.Where(w => w.SellingData.Count == 0 && w.CarDetails.Dimensions.Count > 0).ToList();
+
+            else if(rent ==0)
+                cars =cars.Where(w => w.SellingData.Count > 0 && w.CarDetails.Dimensions.Count > 0).ToList();
+            else
+                return new SearchOutputViewModel
+                {
+                    IsSuccess = false
+                };
+
+            if (cars.Count == 0)
+                return new SearchOutputViewModel
+                {
+                    IsSuccess = false
+                };
+                
+
+            foreach (var car in cars)
+            {
+                SearchViewModel output = new SearchViewModel
+                {
+                    Brand = car.CarDetails.ModelClass.Model.Brand.Name,
+                    Model = car.CarDetails.ModelClass.Model.Name,
+                    CarDetailsId = car.CarDetails.Id,
+                    ClassName = car.CarDetails.ModelClass.ClassName,
+                    Img = car.CarDetails.CarPhotos.Select(s => s.PhotoName).FirstOrDefault(),
+                    modelclassId = car.CarDetails.ModelClass.Id,
+                    modelId = car.CarDetails.ModelClass.Model.Id,
+                    price = car.CarDetails.Price.Value
+                };
+                result.SearchResults.Add(output);
+            }
+            result.IsSuccess = true;
+            return result;
+        }
+
         public ImagesViewModel GetImages(int carDetailsId)
         {
             ImagesViewModel images = new ImagesViewModel();
@@ -309,6 +353,35 @@ namespace CarsApi.Services.Implementation
 
             return model;
         }
+
+
+        private List<UserCar> GetAllCars()
+        {
+            //return _db.CarDetails
+            //    .Include(i => i.ModelClass)
+            //    .Include(i => i.ModelClass.Model)
+            //    .Include(i => i.ModelClass.Model.Brand)
+            //    .Include(i => i.CarPhotos)
+            //    .Include(i => i.Dimensions)
+            //    .Include(i => i.UserCars)
+            //    .ThenInclude(x => x.SellingData)
+            //    .ToList();
+
+
+            return _db.UserCar
+                .Include(i => i.CarDetails)
+                .Include(i => i.CarDetails.Dimensions)
+                .Include(i => i.CarDetails.CarPhotos)
+                .Include(i => i.SellingData)
+                .Include(i => i.CarDetails.ModelClass)
+                .Include(i => i.CarDetails.ModelClass.Model)
+                .Include(i => i.CarDetails.ModelClass.Model.Brand)
+                .ToList();
+
+
+        }
+
+
 
 
     }
