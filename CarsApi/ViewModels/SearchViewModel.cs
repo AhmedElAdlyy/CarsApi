@@ -21,5 +21,6 @@ namespace CarsApi.ViewModels
         public int modelclassId { get; set; }
         public int modelId { get; set; }
         public string ClassName { get; set; }
+        public int CarDetailsId { get; set; }
     }
 }

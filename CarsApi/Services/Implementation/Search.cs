@@ -48,7 +48,8 @@ namespace CarsApi.Services.Implementation
                     Img = M.CarPhotos.Select(a => a.PhotoName).FirstOrDefault(),
                     ClassName=M.ModelClass.ClassName,
                     modelclassId = M.ModelClass.Id,
-                    modelId = M.ModelClass.Model.Id
+                    modelId = M.ModelClass.Model.Id,
+                    CarDetailsId = M.Id
                 };
 
                 modelPrices.Add(model_Price);
