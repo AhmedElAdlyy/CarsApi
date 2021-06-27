@@ -17,5 +17,6 @@ namespace CarsApi.Services.Interface
         Task<UserProfileViewModel> GetProfileData(string userId);
         Task<MessageResponseViewModel> OwingCar(string userId, int carDetailsId);
         Task<UserCars> GetAllUserCars(string userId);
+        Task<MessageResponseViewModel> DeleteOwnedCar(string userId, int userCarId);
     }
 }

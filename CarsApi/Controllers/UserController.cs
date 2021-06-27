@@ -149,7 +149,19 @@ namespace CarsApi.Controllers
                 return Ok(cars.Cars);
 
             return BadRequest();
+        }
 
+
+        [HttpDelete("{userCarId}")]
+        [Authorize]
+        public async Task<ActionResult> DeleteUserCar([FromRoute]int userCarId)
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var result = await _db.DeleteOwnedCar(id, userCarId);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
         }
 
     }

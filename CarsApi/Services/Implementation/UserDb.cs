@@ -288,18 +288,18 @@ namespace CarsApi.Services.Implementation
                 };
 
             var carsOfUser = _db.UserCar
-                .Include(i=>i.CarDetails)
+                .Include(i => i.CarDetails)
                 .Include(i => i.CarDetails.CarPhotos)
                 .Include(i => i.CarDetails.ModelClass)
                 .Include(i => i.CarDetails.ModelClass.Model)
                 .Include(i => i.CarDetails.ModelClass.Model.Brand)
-                .Where(w => w.UserId == userId)
+                .Where(w => w.UserId == userId && w.IsDeleted == false)
                 .ToList();
 
             foreach (var oneCar in carsOfUser)
             {
                 string photoName = oneCar.CarDetails.CarPhotos.Select(s => s.PhotoName).FirstOrDefault();
-                if(photoName == null)
+                if (photoName == null)
                 {
                     photoName = _db.CarPhoto
                         .Include(i => i.CarDetails)
@@ -311,15 +311,57 @@ namespace CarsApi.Services.Implementation
                 ChooseCarViewModel car = new ChooseCarViewModel
                 {
                     CarDetailsId = oneCar.CarDetails.Id,
-                    CarName = oneCar.CarDetails.ModelClass.Model.Brand.Name+" "+oneCar.CarDetails.ModelClass.Model.Name+" "+oneCar.CarDetails.ModelClass.Model.Year,
+                    CarName = oneCar.CarDetails.ModelClass.Model.Brand.Name + " " + oneCar.CarDetails.ModelClass.Model.Name + " " + oneCar.CarDetails.ModelClass.Model.Year,
                     ClassName = oneCar.CarDetails.ModelClass.ClassName,
-                    ImgName = photoName
+                    ImgName = photoName,
+                    UserCarId = oneCar.Id
                 };
                 userCars.Cars.Add(car);
             }
 
             userCars.IsSuccess = true;
             return userCars;
+        }
+
+        public async Task<MessageResponseViewModel> DeleteOwnedCar(string userId, int userCarId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "User not found"
+                };
+
+            var UserCar = _db.UserCar.FirstOrDefault(f => f.UserId == userId && f.Id == userCarId);
+            if (UserCar == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "can not find your car"
+                };
+
+            try
+            {
+                UserCar.IsDeleted = true;
+                _db.SaveChanges();
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = true,
+                    Message = "Deleted Successfully"
+                };
+            }
+            catch (Exception)
+            {
+
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "Something went wrong"
+                };
+            }
+
+
         }
 
 
@@ -332,6 +374,6 @@ namespace CarsApi.Services.Implementation
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
         }
 
-        
+
     }
 }
