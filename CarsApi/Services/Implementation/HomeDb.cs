@@ -78,9 +78,9 @@ namespace CarsApi.Services.Implementation
             {
                 do
                 {
-                    id = rnd.Next(176, 283);
+                    id = rnd.Next(1, 591);
                     modelId = GetCarBrandId(id).Value;
-                } while (Ids.Contains(id) || BrandIds.Contains(modelId) || (id == 187 || id == 233 || id == 232 || id == 186 || id == 188));
+                } while (Ids.Contains(id) || BrandIds.Contains(modelId));
                 Ids.Add(id);
                 BrandIds.Add(modelId);
             }

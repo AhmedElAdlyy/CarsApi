@@ -54,7 +54,8 @@ namespace CarsApi.Services.Implementation
                     Img = car.CarDetails.CarPhotos.Select(s => s.PhotoName).FirstOrDefault(),
                     modelclassId = car.CarDetails.ModelClass.Id,
                     modelId = car.CarDetails.ModelClass.Model.Id,
-                    price = car.CarDetails.Price.Value
+                    price = car.CarDetails.Price.Value,
+                    UserEmail = car.User.Email
                 };
                 result.SearchResults.Add(output);
             }
@@ -357,18 +358,9 @@ namespace CarsApi.Services.Implementation
 
         private List<UserCar> GetAllCars()
         {
-            //return _db.CarDetails
-            //    .Include(i => i.ModelClass)
-            //    .Include(i => i.ModelClass.Model)
-            //    .Include(i => i.ModelClass.Model.Brand)
-            //    .Include(i => i.CarPhotos)
-            //    .Include(i => i.Dimensions)
-            //    .Include(i => i.UserCars)
-            //    .ThenInclude(x => x.SellingData)
-            //    .ToList();
-
-
+            
             return _db.UserCar
+                .Include(i=>i.User)
                 .Include(i => i.CarDetails)
                 .Include(i => i.CarDetails.Dimensions)
                 .Include(i => i.CarDetails.CarPhotos)
@@ -377,7 +369,6 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.CarDetails.ModelClass.Model)
                 .Include(i => i.CarDetails.ModelClass.Model.Brand)
                 .ToList();
-
 
         }
 

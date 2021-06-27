@@ -22,5 +22,6 @@ namespace CarsApi.ViewModels
         public int modelId { get; set; }
         public string ClassName { get; set; }
         public int CarDetailsId { get; set; }
+        public string UserEmail { get; set; }
     }
 }

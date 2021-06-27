@@ -114,12 +114,11 @@ namespace CarsApi.Controllers
             return BadRequest();
         }
 
-        [HttpGet("Profile")]
+        [HttpGet("Profile/{email}")]
         [Authorize]
-        public async Task<ActionResult> GetUserProfileData()
+        public async Task<ActionResult> GetUserProfileData([FromRoute]string email)
         {
-            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
-            var profile = await _db.GetProfileData(id);
+            var profile = await _db.GetProfileData(email);
             if (profile.IsSuccess == true)
                 return Ok(profile);
 
@@ -139,12 +138,11 @@ namespace CarsApi.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("UserCars")]
+        [HttpGet("UserCars/{email}")]
         [Authorize]
-        public async Task<ActionResult> GetUserCars()
+        public async Task<ActionResult> GetUserCars(string email)
         {
-            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
-            var cars = await _db.GetAllUserCars(id);
+            var cars = await _db.GetAllUserCars(email);
             if (cars.IsSuccess)
                 return Ok(cars.Cars);
 
@@ -160,6 +158,31 @@ namespace CarsApi.Controllers
             var result = await _db.DeleteOwnedCar(id, userCarId);
             if (result.IsSuccess)
                 return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [HttpGet("UserEmail")]
+        [Authorize]
+        public async Task<ActionResult> GetLoginEmail()
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var result = await _db.GetUserEmail(id);
+            if (result.IsSuccess)
+                return Ok(result);
+
+            return BadRequest(result);
+        }
+
+        [HttpGet("SameUser/{email}")]
+        public async Task<ActionResult> IsSame(string email)
+        {
+            var id = User.Claims.FirstOrDefault(f => f.Type == ClaimTypes.NameIdentifier).Value.ToString();
+            var result = await _db.IsSameUser(id, email);
+
+            if (result.IsSuccess)
+                return Ok(result);
+
 
             return BadRequest(result);
         }

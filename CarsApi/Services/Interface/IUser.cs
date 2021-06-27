@@ -14,9 +14,11 @@ namespace CarsApi.Services.Interface
         Task<MessageResponseViewModel> ConfirmEmailAsync(string userId, string token);
         Task<MessageResponseViewModel> ForgetPasswordAsync(string email);
         Task<MessageResponseViewModel> ResetPasswordAsync(ResetPasswordViewModel reset);
-        Task<UserProfileViewModel> GetProfileData(string userId);
+        Task<UserProfileViewModel> GetProfileData(string email);
         Task<MessageResponseViewModel> OwingCar(string userId, int carDetailsId);
-        Task<UserCars> GetAllUserCars(string userId);
+        Task<UserCars> GetAllUserCars(string email);
         Task<MessageResponseViewModel> DeleteOwnedCar(string userId, int userCarId);
+        Task<MessageResponseViewModel> GetUserEmail(string userId);
+        Task<MessageResponseViewModel> IsSameUser(string userId, string email);
     }
 }

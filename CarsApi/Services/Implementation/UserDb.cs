@@ -32,14 +32,14 @@ namespace CarsApi.Services.Implementation
             _mail = mail;
             _db = db;
         }
-        public async Task<UserProfileViewModel> GetProfileData(string userId)
+        public async Task<UserProfileViewModel> GetProfileData(string email)
         {
             UserProfileViewModel userProfileData = new UserProfileViewModel();
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return new UserProfileViewModel { IsSuccess = false };
 
-            var phones = _db.UserPhone.Where(w => w.UserId == userId);
+            var phones = _db.UserPhone.Where(w => w.UserId == user.Id);
             foreach (var phone in phones)
             {
                 userProfileData.Phones.Add(phone.Number);
@@ -276,11 +276,11 @@ namespace CarsApi.Services.Implementation
 
         }
 
-        public async Task<UserCars> GetAllUserCars(string userId)
+        public async Task<UserCars> GetAllUserCars(string email)
         {
             UserCars userCars = new UserCars();
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return new UserCars
                 {
@@ -293,7 +293,7 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.CarDetails.ModelClass)
                 .Include(i => i.CarDetails.ModelClass.Model)
                 .Include(i => i.CarDetails.ModelClass.Model.Brand)
-                .Where(w => w.UserId == userId && w.IsDeleted == false)
+                .Where(w => w.UserId == user.Id && w.IsDeleted == false)
                 .ToList();
 
             foreach (var oneCar in carsOfUser)
@@ -374,6 +374,63 @@ namespace CarsApi.Services.Implementation
             return $"{_configuration["AppUrl"]}api/user/ConfirmEmail?userId={identityUser.Id}&token={validEmailToken}";
         }
 
+        public async Task<MessageResponseViewModel> GetUserEmail(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
 
+            if (user == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "user not found"
+                };
+
+            return new MessageResponseViewModel
+            {
+                IsSuccess = true,
+                Message = user.Email
+            };
+        }
+
+        public async Task<MessageResponseViewModel> IsSameUser(string userId, string email)
+        {
+            if (userId == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = true,
+                    Message = "different"
+                };
+
+            var currentLoginUser = await _userManager.FindByIdAsync(userId);
+
+            if (currentLoginUser == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "user not found"
+                };
+            var userProfile = await _userManager.FindByEmailAsync(email);
+
+            if (userProfile == null)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = false,
+                    Message = "user not found"
+                };
+
+            if (currentLoginUser.Id == userProfile.Id)
+                return new MessageResponseViewModel
+                {
+                    IsSuccess = true,
+                    Message = "same"
+                };
+
+            return new MessageResponseViewModel
+            {
+                IsSuccess = true,
+                Message = "different"
+            };
+
+        }
     }
 }
