@@ -17,6 +17,7 @@ namespace CarsApi.Models
         public string UserId { get; set; }
         [ForeignKey("CarDetails")]
         public int? CarDetailsId { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual CarDetails CarDetails { get; set; }
         public virtual ApplicationUser User { get; set; }
