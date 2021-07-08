@@ -18,6 +18,8 @@ namespace CarsApi.ViewModels
 
         [Required]
         public string Password { get; set; }
+        [Required]
+        public string PhoneNo { get; set; }
 
         [Required]
         [NotMapped]

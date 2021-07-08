@@ -28,8 +28,8 @@ namespace CarsApi.Services.Implementation
             if (rent == 1)
                 cars = cars.Where(w => w.SellingData.Count == 0 && w.CarDetails.Dimensions.Count > 0).ToList();
 
-            else if(rent ==0)
-                cars =cars.Where(w => w.SellingData.Count > 0 && w.CarDetails.Dimensions.Count > 0).ToList();
+            else if (rent == 0)
+                cars = cars.Where(w => w.SellingData.Count > 0 && w.CarDetails.Dimensions.Count > 0).ToList();
             else
                 return new SearchOutputViewModel
                 {
@@ -41,7 +41,7 @@ namespace CarsApi.Services.Implementation
                 {
                     IsSuccess = false
                 };
-                
+
 
             foreach (var car in cars)
             {
@@ -358,9 +358,9 @@ namespace CarsApi.Services.Implementation
 
         private List<UserCar> GetAllCars()
         {
-            
+
             return _db.UserCar
-                .Include(i=>i.User)
+                .Include(i => i.User)
                 .Include(i => i.CarDetails)
                 .Include(i => i.CarDetails.Dimensions)
                 .Include(i => i.CarDetails.CarPhotos)

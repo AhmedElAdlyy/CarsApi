@@ -39,15 +39,14 @@ namespace CarsApi.Services.Implementation
             if (user == null)
                 return new UserProfileViewModel { IsSuccess = false };
 
-            var phones = _db.UserPhone.Where(w => w.UserId == user.Id);
-            foreach (var phone in phones)
-            {
-                userProfileData.Phones.Add(phone.Number);
-            }
+            var phone = _db.UserPhone.FirstOrDefault(w => w.UserId == user.Id);
+            
 
             userProfileData.IsSuccess = true;
             userProfileData.Fullname = user.FullName;
             userProfileData.Email = user.Email;
+            if(phone != null)
+                userProfileData.PhoneNo = phone.Number;
 
             return userProfileData;
         }
@@ -66,6 +65,14 @@ namespace CarsApi.Services.Implementation
             };
 
             var result = await _userManager.CreateAsync(identityUser, registeration.Password);
+            UserPhone phone = new UserPhone
+            {
+                Number = registeration.PhoneNo,
+                UserId = identityUser.Id
+            };
+            _db.UserPhone.Add(phone);
+            _db.SaveChanges();
+
 
             if (result.Succeeded)
                 return new MessageResponseViewModel

@@ -10,6 +10,6 @@ namespace CarsApi.ViewModels
         public bool IsSuccess { get; set; }
         public string Fullname { get; set; }
         public string Email { get; set; }
-        public List<string> Phones = new List<string>();
+        public string PhoneNo { get; set; }
     }
 }
