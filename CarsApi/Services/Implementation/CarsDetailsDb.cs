@@ -368,6 +368,7 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.CarDetails.ModelClass)
                 .Include(i => i.CarDetails.ModelClass.Model)
                 .Include(i => i.CarDetails.ModelClass.Model.Brand)
+                .Where(w => w.IsDeleted == false)
                 .ToList();
 
         }
