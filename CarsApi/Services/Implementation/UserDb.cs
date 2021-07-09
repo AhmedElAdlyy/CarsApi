@@ -129,7 +129,8 @@ namespace CarsApi.Services.Implementation
                 Token = tokenString,
                 IsSuccess = true,
                 ExpireDate = token.ValidTo,
-                Message = user.FullName
+                Fullname = user.FullName,
+                Email = user.Email
             };
         }
 
