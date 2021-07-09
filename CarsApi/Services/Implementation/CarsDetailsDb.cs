@@ -358,7 +358,6 @@ namespace CarsApi.Services.Implementation
 
         private List<UserCar> GetAllCars()
         {
-
             return _db.UserCar
                 .Include(i => i.User)
                 .Include(i => i.CarDetails)
@@ -370,11 +369,7 @@ namespace CarsApi.Services.Implementation
                 .Include(i => i.CarDetails.ModelClass.Model.Brand)
                 .Where(w => w.IsDeleted == false)
                 .ToList();
-
         }
-
-
-
 
     }
 }

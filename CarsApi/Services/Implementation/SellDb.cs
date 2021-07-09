@@ -21,7 +21,10 @@ namespace CarsApi.Services.Implementation
 
         public MessageResponseViewModel EnterSellingData(SellingDataViewModel model, int carDetailsId)
         {
-            UserCar userCar = _db.UserCar.FirstOrDefault(f => f.CarDetailsId == carDetailsId);
+            UserCar userCar = _db.UserCar
+                .Include(i=>i.CarDetails)
+                .FirstOrDefault(f => f.CarDetailsId == carDetailsId);
+
             if (userCar == null)
                 return new MessageResponseViewModel
                 {
@@ -42,6 +45,7 @@ namespace CarsApi.Services.Implementation
             try
             {
                 _db.SellingData.Add(selling);
+                userCar.CarDetails.Price = model.Price;
                 _db.SaveChanges();
                 return new MessageResponseViewModel
                 {

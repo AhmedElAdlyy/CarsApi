@@ -11,6 +11,7 @@ namespace CarsApi.ViewModels
         public bool Maintainance { get; set; }
         public bool Guarntee { get; set; }
         public bool Fabrique { get; set; }
+        public decimal Price { get; set; }
         public string Notes { get; set; }
     }
 }
