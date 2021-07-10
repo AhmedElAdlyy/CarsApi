@@ -18,11 +18,10 @@ namespace CarsApi.Services.Implementation
             _db = db;
         }
 
-
         public MessageResponseViewModel EnterSellingData(SellingDataViewModel model, int carDetailsId)
         {
             UserCar userCar = _db.UserCar
-                .Include(i=>i.CarDetails)
+                .Include(i => i.CarDetails)
                 .FirstOrDefault(f => f.CarDetailsId == carDetailsId);
 
             if (userCar == null)
@@ -62,6 +61,29 @@ namespace CarsApi.Services.Implementation
                 };
 
             }
+        }
+
+        public SellingDataViewModel GetSellingData(int carDetailsId)
+        {
+
+            SellingData sellingData = _db.SellingData
+                .Include(i => i.UserCar)
+                .Include(i => i.UserCar.CarDetails)
+                .FirstOrDefault(f => f.UserCar.CarDetails.Id == carDetailsId);
+
+            if (sellingData == null)
+                return new SellingDataViewModel { };
+
+            SellingDataViewModel data = new SellingDataViewModel
+            {
+                Fabrique = sellingData.Fabrique.Value,
+                Guarntee = sellingData.Guarntee.Value,
+                Km = sellingData.Km.Value,
+                Maintainance = sellingData.AgencyMaintainance.Value,
+                Notes = sellingData.Notes
+            };
+
+            return data;
         }
     }
 }

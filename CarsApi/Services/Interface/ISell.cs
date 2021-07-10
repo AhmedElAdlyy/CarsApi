@@ -9,5 +9,6 @@ namespace CarsApi.Services.Interface
     public interface ISell
     {
         MessageResponseViewModel EnterSellingData(SellingDataViewModel model, int carDetailsId);
+        SellingDataViewModel GetSellingData(int carDetailsId);
     }
 }

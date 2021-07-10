@@ -30,5 +30,15 @@ namespace CarsApi.Controllers
 
             return BadRequest(result);
         }
+
+        [HttpGet("GetSelling/{carDetailsId}")]
+        public ActionResult GetSellingData([FromRoute] int carDetailsId)
+        {
+            var result = _db.GetSellingData(carDetailsId);
+            if (result != null)
+                return Ok(result);
+
+            return BadRequest();
+        }
     }
 }
